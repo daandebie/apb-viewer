@@ -2,9 +2,9 @@ name: APB bijwerken
 
 on:
   schedule:
-    # UTC. Tijdens de APB (16–17 sep) en de nacht erna elke 10 minuten; daarna dagelijks
+    # UTC. Tijdens de APB (16–17 sep) en de nacht erna elke 5 minuten (het minimum van GitHub); daarna dagelijks
     # voor late tussenversies en de gecorrigeerde Eindpublicatie.
-    - cron: "*/10 * 16-18 9 *"
+    - cron: "*/5 * 16-18 9 *"
     - cron: "23 6 * * *"
   workflow_dispatch:
   push:
@@ -24,6 +24,9 @@ jobs:
   bijwerken:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
     env:
       APB_BRON: GitHub Actions
     steps:
@@ -34,11 +37,11 @@ jobs:
           python-version: "3.12"
 
       - name: Pollinterval bepalen
-        # Alleen 16–18 sep draait het schema elke 10 min; anders dagelijks. De viewer waarschuwt op basis hiervan.
+        # Alleen 16–18 sep draait het schema elke 5 min; anders dagelijks. De viewer waarschuwt op basis hiervan.
         run: |
           vandaag=$(TZ=Europe/Amsterdam date +%F)
           if [[ "$vandaag" > "2026-09-15" && "$vandaag" < "2026-09-19" ]]; then
-            echo "APB_INTERVAL_MIN=10" >> "$GITHUB_ENV"
+            echo "APB_INTERVAL_MIN=5" >> "$GITHUB_ENV"
           else
             echo "APB_INTERVAL_MIN=1440" >> "$GITHUB_ENV"
           fi
@@ -98,12 +101,4 @@ jobs:
         with:
           path: _site
 
-  publiceren:
-    needs: bijwerken
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v5
+      - uses: actions/deploy-pages@v5

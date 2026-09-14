@@ -22,11 +22,11 @@ GitHub Actions (`.github/workflows/bijwerken.yml`) doet het werk, je laptop hoef
 
 | Wanneer | Wat |
 |---|---|
-| 16–18 sep, elke 10 min | `fetcher.py` → nieuwe versies in `raw/` committen → `parse.py` → publiceren op GitHub Pages |
+| 16–18 sep, elke 5 min | `fetcher.py` → nieuwe versies in `raw/` committen → `parse.py` → publiceren op GitHub Pages |
 | daarna dagelijks 08:23 | idem, voor late tussenversies en de gecorrigeerde Eindpublicatie |
 | bij elke push naar `main` | opnieuw bouwen en publiceren (bijv. na nieuwe samenvattingen) |
 
-Een storing bij de Kamer blokkeert de publicatie niet: de viewer toont dan "Laatste controle mislukt". Geplande GitHub-runs starten soms enkele minuten later dan gepland; na ruim drie gemiste rondes kleurt de statusknop oranje ("Bijwerken loopt achter"). Handmatig een run starten: `gh workflow run bijwerken.yml -R daandebie/apb-viewer`.
+Een storing bij de Kamer blokkeert de publicatie niet: de viewer toont dan "Laatste controle mislukt". Geplande GitHub-runs starten bij zo'n kort interval regelmatig 10–15 minuten later dan gepland; pas als er 25 minuten geen controle is geweest kleurt de statusknop oranje ("Bijwerken loopt achter"). Handmatig een run starten: `gh workflow run bijwerken.yml -R daandebie/apb-viewer`.
 
 **Let op, rond half november:** GitHub zet geplande workflows in een publieke repo uit na 60 dagen zonder activiteit. Komt er na 18 september niets nieuws binnen, dan stopt de dagelijkse run rond 17 november, en dat is net de periode waarin de gecorrigeerde Eindpublicatie verwacht wordt. Controleer dan *Actions*; zet de workflow zo nodig weer aan en start een run met het commando hierboven.
 

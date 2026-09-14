@@ -600,8 +600,8 @@ function bijwerkenDatastatus() {
     html = `<span class="stip"></span><b>Momentopname</b> · gecontroleerd ${klok(st.gecontroleerd_op, true)}${staart}`;
   } else {
     const minuten = (Date.now() - datum(st.gecontroleerd_op)) / 60000;
-    // Geplande GitHub-runs lopen soms wat uit; pas bij ruim drie gemiste rondes waarschuwen.
-    const grens = Math.max(3.5 * (st.interval_min || 1), 20);
+    // Geplande GitHub-runs starten bij een kort interval regelmatig 10–15 min te laat; pas daarna waarschuwen.
+    const grens = Math.max(4 * (st.interval_min || 1), 25);
     if (st.resultaat === 'fout') {
       klasse = 'fout';
       html = `<span class="stip"></span><b>Laatste controle mislukt</b> (${klok(st.gecontroleerd_op)})${staart}`;
@@ -1385,7 +1385,7 @@ function toonBronnen() {
   const m = S.data.meta;
   const st = S.status || {};
   let h = `<h3>Actualiteit</h3><p>`;
-  if (st.gecontroleerd_op) h += `Laatst gecontroleerd bij de Tweede Kamer: <b>${esc(klok(st.gecontroleerd_op, true))}</b> (${esc(geleden(st.gecontroleerd_op))}) — ${st.resultaat === 'fout' ? `<b style="color:var(--ongecorr)">mislukt: ${esc(st.fout)}</b>` : 'gelukt'}. Er wordt ${esc(intervalTekst(st.interval_min))} gecontroleerd (${esc(st.bron)}); tijdens de APB (16–18 september) elke 10 minuten.<br>`;
+  if (st.gecontroleerd_op) h += `Laatst gecontroleerd bij de Tweede Kamer: <b>${esc(klok(st.gecontroleerd_op, true))}</b> (${esc(geleden(st.gecontroleerd_op))}) — ${st.resultaat === 'fout' ? `<b style="color:var(--ongecorr)">mislukt: ${esc(st.fout)}</b>` : 'gelukt'}. Er wordt ${esc(intervalTekst(st.interval_min))} gecontroleerd (${esc(st.bron)}); tijdens de APB (16–18 september) elke 5 minuten.<br>`;
   h += `Laatste nieuwe verslagversie binnengehaald: ${esc(klok(m.laatst_opgehaald_op, true))}. Data verwerkt: ${esc(klok(m.gegenereerd_op, true))}.<br>`;
   h += `De Kamer publiceert tijdens de vergadering met vertraging (bij de test: eerste versie ~1¾ uur na aanvang, daarna elke 30–90 min). Per fragment geldt de nieuwste versie waarin het voorkomt; eerdere versies blijven in het archief bewaard.</p>`;
   if (location.protocol.startsWith('http')) {

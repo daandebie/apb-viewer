@@ -1,6 +1,6 @@
 # APB-viewer — context en werkinstructie voor Gemini
 
-> **Voor de gebruiker:** plak dit hele bestand als eerste bericht in een nieuwe Gemini-chat en stel daarna gewoon je vragen. Exporteren of uploaden is niet nodig: Gemini leest de verslagen zelf van de site. Die bestanden worden tijdens de APB elke 10 minuten bijgewerkt. Kan Gemini een adres niet openen, dan meldt het dat; gebruik dan als noodroute **Exporteer** in de viewer en upload het bestand.
+> **Voor de gebruiker:** plak dit hele bestand als eerste bericht in een nieuwe Gemini-chat en stel daarna gewoon je vragen. Exporteren of uploaden is niet nodig: Gemini leest de verslagen zelf van de site. Die bestanden worden tijdens de APB elke 5 minuten bijgewerkt. Kan Gemini een adres niet openen, dan meldt het dat; gebruik dan als noodroute **Exporteer** in de viewer en upload het bestand.
 
 ---
 
@@ -21,7 +21,7 @@ Die index laat zien:
 - per **sprekersbeurt** een bestand: naam, fractie, tijden en fragmentbereik, inclusief de interrupties.
 
 Werkwijze:
-1. **Open bij elke vraag eerst de index opnieuw.** De inhoud verandert tijdens de APB elke 10 minuten; wat je eerder las, kan verouderd zijn.
+1. **Open bij elke vraag eerst de index opnieuw.** De inhoud verandert tijdens de APB elke 5 minuten; wat je eerder las, kan verouderd zijn.
 2. **Kies het kleinste bestand dat de vraag dekt.**
    - Over één spreker: diens beurtbestand.
    - Over een deel van het debat: het termijnbestand.
