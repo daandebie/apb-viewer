@@ -15,7 +15,7 @@ Alles is Python-stdlib (systeem-`python3` 3.9 volstaat), de viewer is één HTML
 
 - **Viewer:** https://daandebie.github.io/apb-viewer/ — openbaar via de link, niet geïndexeerd (`noindex` + `robots.txt`)
 - **Demo met testdata** (3–4 juni 2026, stand 4 juni 16:00): https://daandebie.github.io/apb-viewer/demo/
-- **Voor Gemini:** uploaden via **Exporteer → Voor Gemini** (zie [Export](#export-voor-een-extern-taalmodel-gemini)). Prompt, eenmalig in een Gem plakken: https://daandebie.github.io/apb-viewer/gemini-prompt.txt (bron: `gemini-prompt-apb.md`). Gemini zelf kan github.io **niet** openen (PERMISSION_DENIED / URL_FETCH_STATUS_MISC_ERROR, gemeld 14-09-2026); links geven werkt dus niet.
+- **Voor Gemini:** uploaden via **Exporteer → Voor Gemini** (zie [Export](#export-voor-een-extern-taalmodel-gemini)). Prompt, eenmalig in een Gem plakken: https://daandebie.github.io/apb-viewer/gemini-prompt.txt (bron: `gemini-prompt-apb.md`). Gemini-chat kan **geen enkele** URL openen: getest op 14-09-2026 op twee accounts, met onze site en met de API van de Tweede Kamer. Links geven werkt dus niet. Gemini Notebooks kan een URL wel als bron importeren, maar dat is een momentopname en gaf in de test foute antwoorden (een aanwezig fragment "niet gevonden", verkeerd laatste fragment).
 - **Voor taalmodellen die zelf webadressen openen:** https://daandebie.github.io/apb-viewer/gemini/index.md — leesbare bestanden per dag, termijn en beurt (zelfde opmaak als de exportknop, ook als `.txt`), elke run opnieuw gemaakt door `export.py`.
 - **Runs:** https://github.com/daandebie/apb-viewer/actions
 

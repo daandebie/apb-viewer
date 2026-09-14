@@ -2,7 +2,7 @@
 
 > **Voor de gebruiker — zo werkt het**
 >
-> Gemini kan de site van de viewer niet zelf openen: de ophaaltool van Gemini blokkeert github.io. Je geeft de tekst daarom als **bestand** mee.
+> Gemini kan in een chat geen webadressen openen, van geen enkele site. Je geeft de tekst daarom als **bestand** mee.
 >
 > 1. **Eenmalig:** maak in Gemini een **Gem** (bijvoorbeeld "APB") en plak dit hele bestand bij de instructies. Zonder Gem plak je het als eerste bericht in elke nieuwe chat.
 > 2. **Nieuwe chat:** kies in de viewer **Exporteer → Voor Gemini → Alles tot nu** en upload het gedownloade bestand in de chat.

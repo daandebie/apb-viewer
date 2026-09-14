@@ -1315,7 +1315,7 @@ function exporteerSpreker(spk, metBeurten) {
 
 /* ================================================================ voor Gemini: uploaden, daarna alleen aanvullingen */
 
-// Gemini kan github.io niet openen, dus de lezer uploadt bestanden. Om tijdens het debat niet steeds de hele dag
+// Gemini-chat kan geen enkele URL openen, dus de lezer uploadt bestanden. Om tijdens het debat niet steeds de hele dag
 // opnieuw te uploaden, onthoudt deze browser wat er al voor Gemini is gedownload; daarna volgt alleen de aanvulling.
 // Per pad bewaard: de demo draait op hetzelfde domein en zou anders de APB-stand overschrijven.
 const geminiSleutel = () => 'apb-gemini-basis:' + location.pathname.replace(/index\.html$/, '');
