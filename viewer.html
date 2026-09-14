@@ -1388,7 +1388,10 @@ function toonBronnen() {
   if (st.gecontroleerd_op) h += `Laatst gecontroleerd bij de Tweede Kamer: <b>${esc(klok(st.gecontroleerd_op, true))}</b> (${esc(geleden(st.gecontroleerd_op))}) — ${st.resultaat === 'fout' ? `<b style="color:var(--ongecorr)">mislukt: ${esc(st.fout)}</b>` : 'gelukt'}. Er wordt ${esc(intervalTekst(st.interval_min))} gecontroleerd (${esc(st.bron)}); tijdens de APB (16–18 september) elke 10 minuten.<br>`;
   h += `Laatste nieuwe verslagversie binnengehaald: ${esc(klok(m.laatst_opgehaald_op, true))}. Data verwerkt: ${esc(klok(m.gegenereerd_op, true))}.<br>`;
   h += `De Kamer publiceert tijdens de vergadering met vertraging (bij de test: eerste versie ~1¾ uur na aanvang, daarna elke 30–90 min). Per fragment geldt de nieuwste versie waarin het voorkomt; eerdere versies blijven in het archief bewaard.</p>`;
-  if (location.protocol.startsWith('http')) h += `<p><a href="apb-offline.html" download>Download de offline versie</a> — de hele viewer met deze data in één bestand, te openen zonder internet (ververst niet vanzelf).</p>`;
+  if (location.protocol.startsWith('http')) {
+    h += `<p><a href="apb-offline.html" download>Download de offline versie</a> — de hele viewer met deze data in één bestand, te openen zonder internet (ververst niet vanzelf).</p>`;
+    h += `<p><a href="gemini/index.md" target="_blank" rel="noopener">Leesbare bestanden voor Gemini en andere taalmodellen</a> — dezelfde tekst als de exports, per dag, termijn en beurt, automatisch bijgewerkt. Geef een taalmodel dat adres en het hoeft niet te exporteren.</p>`;
+  }
   for (const d of S.data.dagen) {
     const actueel = new Set(d.actuele_bronnen.map(b => b.verslag_id));
     h += `<h3>${esc(d.label)} — ${esc(d.lang)}</h3>`;

@@ -15,6 +15,7 @@ Alles is Python-stdlib (systeem-`python3` 3.9 volstaat), de viewer is één HTML
 
 - **Viewer:** https://daandebie.github.io/apb-viewer/ — openbaar via de link, niet geïndexeerd (`noindex` + `robots.txt`)
 - **Demo met testdata** (3–4 juni 2026, stand 4 juni 16:00): https://daandebie.github.io/apb-viewer/demo/
+- **Voor Gemini / taalmodellen:** https://daandebie.github.io/apb-viewer/gemini/index.md — leesbare bestanden per dag, termijn en beurt (zelfde opmaak als de exportknop, ook als `.txt`), elke run opnieuw gemaakt door `export.py`. Prompt voor Gemini: `gemini-prompt-apb.md`.
 - **Runs:** https://github.com/daandebie/apb-viewer/actions
 
 GitHub Actions (`.github/workflows/bijwerken.yml`) doet het werk, je laptop hoeft niet aan:
@@ -169,6 +170,8 @@ git add data/samenvattingen.json && git commit -m "Samenvattingen" && git pull -
 | `apb-offline.html` | viewer met ingesloten data (afgeleid; online te downloaden via *Bronnen*) |
 | `data/ophaalstatus.json` | stand van de laatste controle (afgeleid, niet in git) |
 | `.github/workflows/bijwerken.yml` | ophalen, verwerken en publiceren |
+| `export.py` | leesbare bestanden voor taalmodellen op vaste adressen (`/gemini/`) |
+| `gemini-prompt-apb.md` | prompt die je in Gemini plakt: wat er is, waar, en hoe te antwoorden |
 | `fetcher.log` | ophaallog (niet in git) |
 
 Wat in git staat: code, `config.json`, `fracties.json`, `raw/` (archief) en `data/samenvattingen.json` (niet af te leiden). Alles wat `parse.py` maakt, wordt in de workflow opnieuw gebouwd.

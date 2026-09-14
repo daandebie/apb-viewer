@@ -73,6 +73,12 @@ jobs:
           --uitvoer _site/demo
           --notitie "Demo met testdata: de plenaire vergaderingen van 3 en 4 juni 2026, zoals ze op 4 juni om 16:00 zichtbaar waren. De verslagen van de Algemene Politieke Beschouwingen staan op de hoofdpagina."
 
+      - name: Leesbare bestanden voor taalmodellen
+        run: |
+          BASIS="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          python export.py --uitvoer _site/gemini --basis-url "$BASIS"
+          python export.py --data _site/demo/data/apb.json --geen-status --uitvoer _site/demo/gemini --basis-url "${BASIS}demo/"
+
       - name: Site samenstellen
         run: |
           mkdir -p _site/data
