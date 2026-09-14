@@ -157,7 +157,7 @@ class Exporteur:
               "Je krijgt hieronder verslagtekst van de Tweede Kamer. Houd je bij elk antwoord over deze tekst aan deze regels:", "",
               "1. Gebruik deze tekst om te zoeken, samen te vatten en te oriënteren — niet als citeerbare bron.",
               "2. Citeer niet letterlijk. Geef standpunten en uitspraken in eigen woorden weer en zeg erbij dat het om een ongecorrigeerde weergave gaat.",
-              f"3. Verwijs in je antwoord altijd naar het fragment-ID tussen vierkante haken, bijvoorbeeld [{eerste}], bij elke bewering die je op de tekst baseert, bij voorkeur als link: {self.viewer_link(eerste)}. Noem alleen ID's die in dit bestand voorkomen.",
+              f"3. Verwijs in je antwoord altijd naar het fragment-ID tussen vierkante haken, bijvoorbeeld [{eerste}], bij elke bewering die je op de tekst baseert, bij voorkeur als link: {self.viewer_link(eerste)}. Noem alleen ID's die voorkomen in de verslagbestanden die je hebt gekregen.",
               "4. Vermeld de status (bijv. ONGECORRIGEERD) van de fragmenten waarop je je baseert.",
               f"5. Wijs de gebruiker erop dat de definitieve, citeerbare tekst in de Handelingen op {HANDELINGEN} staat.",
               "6. Staat iets niet in deze fragmenten, zeg dat dan. Vul niet aan uit eigen kennis zonder dat expliciet te melden.",

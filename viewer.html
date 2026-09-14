@@ -1163,7 +1163,10 @@ function exporteer(fragmenten, opt) {
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
   toast(`Geëxporteerd: ${naam} (${getal(fragmenten.length)} fragmenten)`);
+  return naam;
 }
+
+const viewerAdres = () => location.protocol.startsWith('http') ? location.origin + location.pathname.replace(/index\.html$/, '') : null;
 
 function filterOmschrijving() {
   const F = S.f, d = [];
@@ -1193,6 +1196,15 @@ function bouwExport(fragmenten, opt, md) {
   L.push('');
   L.push(md ? `> ${B(disclaimerRegels(fragmenten)[0])}` : disclaimerRegels(fragmenten)[0]);
   L.push('');
+  const av = opt.aanvulling;
+  if (av) {
+    L.push(`${H1}AANVULLING — hoort bij een eerdere upload`);
+    L.push('');
+    L.push(`- Dit bestand vult de Gemini-download van ${klok(av.basis.gemaakt, true)} aan (${av.basis.bestand}; het verslag liep toen t/m ${av.basis.tot || '—'}). Zonder die eerdere upload is dit geen volledig verslag.`);
+    L.push(`- Het bevat alleen wat sindsdien veranderde. Nieuwe fragmenten: ${getal(fragmenten.length - av.vervangt.size)}. Veranderde fragmenten (tekst, status, spreker of begintijd): ${getal(av.vervangt.size)}; die vervangen de versie met hetzelfde ID uit de eerdere upload.`);
+    if (av.vervallen.length) L.push(`- Vervallen sinds de vorige download (staan niet meer in het verslag, niet meer gebruiken): ${av.vervallen.join(', ')}`);
+    L.push('');
+  }
   L.push(`${H1}Over dit bestand`);
   L.push('');
   L.push(`- ${B('Wat:')} stenografische verslagen (VLOS) van de Tweede Kamer, opgehaald uit het Gegevensmagazijn van de Tweede Kamer en opgedeeld in fragmenten (één bijdrage van één spreker per fragment).`);
@@ -1201,7 +1213,10 @@ function bouwExport(fragmenten, opt, md) {
   L.push(`- ${B('Actualiteit:')} laatst gecontroleerd bij de Tweede Kamer ${S.status.gecontroleerd_op || 'onbekend'}; nieuwste verslagversie binnengehaald ${S.data.meta.laatst_opgehaald_op || 'onbekend'}; het verslag loopt op dat moment tot ${dagen.map(d => tijd(d.laatste_markeertijd) || '—').join(' / ')} uur (tijdstip van het laatste fragment; tijdens een vergadering loopt de publicatie achter)`);
   L.push(`- ${B('Bestand gemaakt:')} ${nu.toLocaleString('nl-NL', { dateStyle: 'long', timeStyle: 'short' })}`);
   L.push(`- ${B('Status van de fragmenten:')} ${Object.entries(tel).map(([k, v]) => `${getal(v)} ${k}`).join(', ')}`);
-  L.push(`- ${B('Terugzoeken:')} elk fragment heeft een ID tussen vierkante haken, bijvoorbeeld [${fragmenten[0].id}]. Open de APB-viewer (viewer.html of apb-offline.html) met #ID achter de bestandsnaam, bijvoorbeeld viewer.html#${fragmenten[0].id}, om het origineel te zien.`);
+  const adres = viewerAdres();
+  L.push(`- ${B('Terugzoeken:')} elk fragment heeft een ID tussen vierkante haken, bijvoorbeeld [${fragmenten[0].id}]. ${adres
+    ? `Het origineel staat in de APB-viewer op ${adres}#${fragmenten[0].id}.`
+    : `Open de APB-viewer (viewer.html of apb-offline.html) met #ID achter de bestandsnaam, bijvoorbeeld viewer.html#${fragmenten[0].id}, om het origineel te zien.`}`);
   L.push('');
   L.push(`${H1}Juridische status — lees dit eerst`);
   L.push('');
@@ -1222,7 +1237,7 @@ function bouwExport(fragmenten, opt, md) {
   L.push('');
   L.push('1. Gebruik deze tekst om te zoeken, samen te vatten en te oriënteren — niet als citeerbare bron.');
   L.push('2. Citeer niet letterlijk. Geef standpunten en uitspraken in eigen woorden weer en zeg erbij dat het om een ongecorrigeerde weergave gaat.');
-  L.push(`3. Verwijs in je antwoord altijd naar het fragment-ID tussen vierkante haken, bijvoorbeeld [${fragmenten[0].id}], bij elke bewering die je op de tekst baseert. Zo kan de gebruiker het origineel terugzoeken. Noem alleen ID's die in dit bestand voorkomen.`);
+  L.push(`3. Verwijs in je antwoord altijd naar het fragment-ID tussen vierkante haken, bijvoorbeeld [${fragmenten[0].id}], bij elke bewering die je op de tekst baseert${adres ? `, bij voorkeur als link: ${adres}#${fragmenten[0].id}` : ''}. Zo kan de gebruiker het origineel terugzoeken. Noem alleen ID's die voorkomen in de verslagbestanden die je hebt gekregen.`);
   L.push('4. Vermeld de status (bijv. ONGECORRIGEERD) van de fragmenten waarop je je baseert.');
   L.push(`5. Wijs de gebruiker erop dat de definitieve, citeerbare tekst in de Handelingen op ${HANDELINGEN} staat.`);
   L.push('6. Staat iets niet in deze fragmenten, zeg dat dan. Vul niet aan uit eigen kennis zonder dat expliciet te melden.');
@@ -1257,7 +1272,7 @@ function bouwExport(fragmenten, opt, md) {
     }
     L.push('');
     L.push(`## ${fragmentKop(f)}`);
-    L.push(statusRegel(f));
+    L.push(statusRegel(f) + (av && av.vervangt.has(f.id) ? ' · VERVANGT DE VERSIE UIT EEN EERDERE UPLOAD' : ''));
     L.push('');
     L.push(alineaTekst(f, md));
   }
@@ -1296,6 +1311,64 @@ function exporteerSpreker(spk, metBeurten) {
     omschrijving: `${voorbeeld.naam}${voorbeeld.fractie ? ' (' + voorbeeld.fractie + ')' : ''}, alle ${metBeurten ? 'beurten incl. interrupties van anderen' : 'eigen bijdragen'}${S.view === 'alle' ? '' : ', ' + S.data.dagen.find(d => d.datum === S.view).label}`,
     bestandsdeel: `spreker-${voorbeeld.naam}`,
   });
+}
+
+/* ================================================================ voor Gemini: uploaden, daarna alleen aanvullingen */
+
+// Gemini kan github.io niet openen, dus de lezer uploadt bestanden. Om tijdens het debat niet steeds de hele dag
+// opnieuw te uploaden, onthoudt deze browser wat er al voor Gemini is gedownload; daarna volgt alleen de aanvulling.
+// Per pad bewaard: de demo draait op hetzelfde domein en zou anders de APB-stand overschrijven.
+const geminiSleutel = () => 'apb-gemini-basis:' + location.pathname.replace(/index\.html$/, '');
+const geminiHandtekening = f => [f.tekst_hash, f.bron.status, f.spreker ? f.spreker.objectid : '', f.begin].join('|');
+const tekstTotHhmm = datums => hhmm(S.data.dagen.filter(d => datums.includes(d.datum)).map(d => d.laatste_markeertijd).filter(Boolean).sort().pop());
+const geschatteTokens = fragmenten => `~${getal(Math.round(fragmenten.reduce((n, f) => n + f.alineas.reduce((m, a) => m + a.tekst.split(/\s+/).length, 0), 0) * 1.6 / 1000))}k tokens`;
+
+function laadGeminiBasis() {
+  try { return JSON.parse(localStorage.getItem(geminiSleutel()) || 'null'); } catch (e) { return null; }
+}
+function bewaarGeminiBasis(datums, bestand) {
+  const basis = { gemaakt: new Date().toISOString(), bestand, dagen: datums, tot: tekstTotHhmm(datums), fragmenten: {} };
+  for (const f of S.fr) if (datums.includes(f.dag)) basis.fragmenten[f.id] = geminiHandtekening(f);
+  try { localStorage.setItem(geminiSleutel(), JSON.stringify(basis)); }
+  catch (e) { toast('Deze browser bewaart niets (privévenster?): een aanvulling is dan niet mogelijk, kies steeds "Alles tot nu".'); }
+}
+function geminiAanvulling(basis, fragmenten) {
+  const huidig = new Set(fragmenten.map(f => f.id));
+  const fr = fragmenten.filter(f => basis.dagen.includes(f.dag) && basis.fragmenten[f.id] !== geminiHandtekening(f));
+  return {
+    fr,
+    vervangt: new Set(fr.filter(f => f.id in basis.fragmenten).map(f => f.id)),
+    vervallen: Object.keys(basis.fragmenten).filter(id => !huidig.has(id)),
+  };
+}
+
+async function exporteerVoorGemini(datums, omschrijving, deel) {
+  if (S.nieuweData) await pasUpdateToe();
+  const tot = tekstTotHhmm(datums);
+  const naam = exporteer(S.fr.filter(f => datums.includes(f.dag)), {
+    omschrijving: `${omschrijving}, voor Gemini (tekst t/m ${tot || '—'})`,
+    bestandsdeel: `gemini-${deel}-tm-${tot.replace(':', '')}`,
+  });
+  if (naam) bewaarGeminiBasis(datums, naam);
+}
+async function exporteerGeminiAanvulling() {
+  if (S.nieuweData) await pasUpdateToe();
+  const basis = laadGeminiBasis();
+  if (!basis) { toast('Nog geen Gemini-download in deze browser: kies eerst "Alles tot nu".'); return; }
+  const av = geminiAanvulling(basis, S.fr);
+  // Zonder fragmenten niets opslaan: eventuele vervallen ID's gaan dan mee met de volgende aanvulling.
+  if (!av.fr.length) { toast(`Niets nieuw sinds je vorige Gemini-download (${klok(basis.gemaakt, true)}).`); return; }
+  const tot = tekstTotHhmm(basis.dagen);
+  const naam = exporteer(av.fr, {
+    omschrijving: `aanvulling op de Gemini-download van ${klok(basis.gemaakt, true)} (tekst t/m ${tot || '—'})`,
+    bestandsdeel: `gemini-aanvulling-${(basis.tot || '').replace(':', '')}-tm-${tot.replace(':', '')}`,
+    aanvulling: { basis, vervangt: av.vervangt, vervallen: av.vervallen },
+  });
+  if (naam) bewaarGeminiBasis(basis.dagen, naam);
+}
+function openGeminiInstructies() {
+  if (!location.protocol.startsWith('http')) { toast('De instructies staan online: gemini-prompt.txt naast de viewer.'); return; }
+  window.open('gemini-prompt.txt', '_blank', 'noopener');
 }
 
 /* ================================================================ eerdere versie (woorddiff) */
@@ -1390,7 +1463,8 @@ function toonBronnen() {
   h += `De Kamer publiceert tijdens de vergadering met vertraging (bij de test: eerste versie ~1¾ uur na aanvang, daarna elke 30–90 min). Per fragment geldt de nieuwste versie waarin het voorkomt; eerdere versies blijven in het archief bewaard.</p>`;
   if (location.protocol.startsWith('http')) {
     h += `<p><a href="apb-offline.html" download>Download de offline versie</a> — de hele viewer met deze data in één bestand, te openen zonder internet (ververst niet vanzelf).</p>`;
-    h += `<p><a href="gemini/index.md" target="_blank" rel="noopener">Leesbare bestanden voor Gemini en andere taalmodellen</a> — dezelfde tekst als de exports, per dag, termijn en beurt, automatisch bijgewerkt. Geef een taalmodel dat adres en het hoeft niet te exporteren. De bijbehorende <a href="gemini-prompt.md" target="_blank" rel="noopener">instructies voor Gemini</a> plak je als eerste bericht in een nieuwe chat.</p>`;
+    h += `<p><b>Gemini</b> kan deze site niet zelf openen. Gebruik <b>Exporteer → Voor Gemini</b> en upload het bestand in de chat; daarna volstaat telkens de kleine aanvulling. De <a href="gemini-prompt.txt" target="_blank" rel="noopener">instructies voor Gemini</a> plak je eenmalig in een Gem, of als eerste bericht in een nieuwe chat.</p>`;
+    h += `<p><a href="gemini/index.md" target="_blank" rel="noopener">Leesbare bestanden voor taalmodellen die zelf webadressen openen</a> — dezelfde tekst als de exports, per dag, termijn en beurt, automatisch bijgewerkt.</p>`;
   }
   for (const d of S.data.dagen) {
     const actueel = new Set(d.actuele_bronnen.map(b => b.verslag_id));
@@ -1547,7 +1621,19 @@ $('#volgorde').addEventListener('contextmenu', e => {
 
 $('#exportKnop').addEventListener('click', e => {
   const n = zichtbareFragmenten().length;
-  const items = [{ kop: 'Hele dag' }];
+  const items = [{ kop: 'Voor Gemini (bestand uploaden in de chat)' }];
+  const metTekst = S.data.dagen.filter(d => d.aantal_fragmenten);
+  items.push({ label: 'Alles tot nu — voor een nieuwe chat', hint: `${getal(S.fr.length)} · ${geschatteTokens(S.fr)}`, actie: () => exporteerVoorGemini(S.data.dagen.map(d => d.datum), 'alles tot nu', 'alles') });
+  if (metTekst.length > 1) {
+    for (const d of metTekst) items.push({ label: `Alleen ${d.label} — voor een nieuwe chat`, hint: geschatteTokens(S.fr.filter(f => f.dag === d.datum)), actie: () => exporteerVoorGemini([d.datum], `${d.label} (${d.lang})`, d.label) });
+  }
+  const basis = laadGeminiBasis();
+  if (basis) {
+    const nieuw = geminiAanvulling(basis, (S.nieuweData || S.data).fragmenten).fr.length;
+    items.push({ label: `Alleen wat erbij kwam sinds ${klok(basis.gemaakt, true)} — zelfde chat`, hint: nieuw ? getal(nieuw) : 'niets nieuw', actie: exporteerGeminiAanvulling });
+  }
+  items.push({ label: 'Instructies voor Gemini (eenmalig in een Gem plakken)', actie: openGeminiInstructies });
+  items.push('-', { kop: 'Hele dag' });
   for (const d of S.data.dagen) items.push({ label: `${d.label} — ${d.lang}`, hint: getal(d.aantal_fragmenten), actie: () => exporteerDag(d.datum) });
   items.push('-', { label: 'Huidige selectie (wat de filters tonen)', hint: getal(n), actie: exporteerSelectie });
   if (S.f.sprekers.size) {

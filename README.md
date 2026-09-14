@@ -15,7 +15,8 @@ Alles is Python-stdlib (systeem-`python3` 3.9 volstaat), de viewer is één HTML
 
 - **Viewer:** https://daandebie.github.io/apb-viewer/ — openbaar via de link, niet geïndexeerd (`noindex` + `robots.txt`)
 - **Demo met testdata** (3–4 juni 2026, stand 4 juni 16:00): https://daandebie.github.io/apb-viewer/demo/
-- **Voor Gemini / taalmodellen:** https://daandebie.github.io/apb-viewer/gemini/index.md — leesbare bestanden per dag, termijn en beurt (zelfde opmaak als de exportknop, ook als `.txt`), elke run opnieuw gemaakt door `export.py`. Prompt voor Gemini: https://daandebie.github.io/apb-viewer/gemini-prompt.md (bron: `gemini-prompt-apb.md`).
+- **Voor Gemini:** uploaden via **Exporteer → Voor Gemini** (zie [Export](#export-voor-een-extern-taalmodel-gemini)). Prompt, eenmalig in een Gem plakken: https://daandebie.github.io/apb-viewer/gemini-prompt.txt (bron: `gemini-prompt-apb.md`). Gemini zelf kan github.io **niet** openen (PERMISSION_DENIED / URL_FETCH_STATUS_MISC_ERROR, gemeld 14-09-2026); links geven werkt dus niet.
+- **Voor taalmodellen die zelf webadressen openen:** https://daandebie.github.io/apb-viewer/gemini/index.md — leesbare bestanden per dag, termijn en beurt (zelfde opmaak als de exportknop, ook als `.txt`), elke run opnieuw gemaakt door `export.py`.
 - **Runs:** https://github.com/daandebie/apb-viewer/actions
 
 GitHub Actions (`.github/workflows/bijwerken.yml`) doet het werk, je laptop hoeft niet aan:
@@ -38,7 +39,8 @@ Niets te starten. Wel doen:
 
 1. Rond 10:00 de viewer openen: de statusknop moet groen zijn ("Gecontroleerd …").
 2. **Verwacht vertraging.** Bij de test op 3 juni (aanvang 10.15) verscheen de eerste tussenpublicatie om 12.02, met tekst tot 10.28. Daarna kwam er elke 30–90 minuten een nieuwe versie, en de laatste van die dag pas de volgende ochtend. Tot de Kamer de `Vergadering` aanmaakt, staat er "nog geen verslag".
-3. Blijft de knop oranje of rood: kijk bij *Actions*. Noodroute op de laptop: `git pull && caffeinate -i python3 fetcher.py --watch` plus `python3 -m http.server 8765 --bind 127.0.0.1`, en achteraf `git add raw && git commit && git pull --rebase && git push`.
+3. **Gemini:** vooraf één keer oefenen op `/demo/`: Gem aanmaken met `gemini-prompt.txt`, *Exporteer → Voor Gemini → Alles tot nu* uploaden. De aanvulling geeft in de demo altijd "niets nieuw": de testdata verandert niet.
+4. Blijft de knop oranje of rood: kijk bij *Actions*. Noodroute op de laptop: `git pull && caffeinate -i python3 fetcher.py --watch` plus `python3 -m http.server 8765 --bind 127.0.0.1`, en achteraf `git add raw && git commit && git pull --rebase && git push`.
 
 ## Lokaal werken
 
@@ -79,7 +81,15 @@ Wat niet af te dichten is vanuit een webpagina: schermafbeeldingen, "Bron weerge
 
 ## Export voor een extern taalmodel (Gemini)
 
-Knop **Exporteer**: hele dag, huidige selectie, of via een blok (⤓) / fragment (⋯) / sprekersfilter: één beurt, termijn, agendapunt of alle bijdragen van één spreker. Formaat Markdown of platte tekst, één bestand. Per fragment:
+**Voor Gemini** (bovenaan het menu Exporteer), omdat Gemini de site niet zelf kan lezen:
+
+1. **Alles tot nu** (of *Alleen Dag N* zodra er twee dagen zijn) → uploaden in een nieuwe chat. Het menu toont een tokenschatting; een hele dag is ~170k tokens bij de juni-test.
+2. **Alleen wat erbij kwam sinds HH:MM** → uploaden in dezelfde chat. De browser bewaart per pad (`localStorage`, sleutel `apb-gemini-basis:<pad>`) wat er voor Gemini is gedownload: per fragment-ID een handtekening van tekst-hash, status, spreker en begintijd. De aanvulling bevat nieuwe fragmenten plus fragmenten waarvan die handtekening veranderde (gemarkeerd `VERVANGT DE VERSIE UIT EEN EERDERE UPLOAD`), en een lijst vervallen ID's. Staat er een nieuwere `apb.json` klaar, dan wordt die eerst toegepast.
+3. **Instructies voor Gemini** → opent `gemini-prompt.txt` om in een Gem te plakken.
+
+De aanvulling rekent vanaf de laatste Gemini-download in díe browser, dus: één chat tegelijk, en een nieuwe chat altijd beginnen met *Alles tot nu*. In een privévenster werkt de aanvulling niet (geen opslag).
+
+Verder: hele dag, huidige selectie, of via een blok (⤓) / fragment (⋯) / sprekersfilter: één beurt, termijn, agendapunt of alle bijdragen van één spreker. Formaat Markdown of platte tekst, één bestand. Per fragment:
 
 ```
 ## [2026-09-16-0143] Naam spreker (fractie)
@@ -88,7 +98,7 @@ Knop **Exporteer**: hele dag, huidige selectie, of via een blok (⤓) / fragment
 <tekst, alinea's intact>
 ```
 
-De kop instrueert het model om niet letterlijk te citeren en altijd naar het fragment-ID te verwijzen; met dat ID vind je het origineel terug in de viewer.
+De kop instrueert het model om niet letterlijk te citeren en altijd naar het fragment-ID te verwijzen; met dat ID vind je het origineel terug in de viewer (online: volledige link naar de viewer).
 
 ## Samenvattingen
 
@@ -171,7 +181,7 @@ git add data/samenvattingen.json && git commit -m "Samenvattingen" && git pull -
 | `data/ophaalstatus.json` | stand van de laatste controle (afgeleid, niet in git) |
 | `.github/workflows/bijwerken.yml` | ophalen, verwerken en publiceren |
 | `export.py` | leesbare bestanden voor taalmodellen op vaste adressen (`/gemini/`) |
-| `gemini-prompt-apb.md` | prompt die je in Gemini plakt: wat er is, waar, en hoe te antwoorden |
+| `gemini-prompt-apb.md` | prompt voor Gemini (in een Gem): uploadroute, hoe uploads en aanvullingen te combineren, hoe te antwoorden; online als `gemini-prompt.txt`/`.md` |
 | `fetcher.log` | ophaallog (niet in git) |
 
 Wat in git staat: code, `config.json`, `fracties.json`, `raw/` (archief) en `data/samenvattingen.json` (niet af te leiden). Alles wat `parse.py` maakt, wordt in de workflow opnieuw gebouwd.
