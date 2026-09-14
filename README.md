@@ -27,6 +27,8 @@ GitHub Actions (`.github/workflows/bijwerken.yml`) doet het werk, je laptop hoef
 
 Een storing bij de Kamer blokkeert de publicatie niet: de viewer toont dan "Laatste controle mislukt". Geplande GitHub-runs starten soms enkele minuten later dan gepland; na ruim drie gemiste rondes kleurt de statusknop oranje ("Bijwerken loopt achter"). Handmatig een run starten: `gh workflow run bijwerken.yml -R daandebie/apb-viewer`.
 
+**Let op, rond half november:** GitHub zet geplande workflows in een publieke repo uit na 60 dagen zonder activiteit. Komt er na 18 september niets nieuws binnen, dan stopt de dagelijkse run rond 17 november, en dat is net de periode waarin de gecorrigeerde Eindpublicatie verwacht wordt. Controleer dan *Actions*; zet de workflow zo nodig weer aan en start een run met het commando hierboven.
+
 **Hoe actueel is het?** De statusknop rechtsboven toont wanneer er voor het laatst bij de Kamer is gecontroleerd, wanneer de Kamer de nieuwste versie publiceerde en tot hoe laat de tekst loopt. De dagkop herhaalt dat per dag, en exports vermelden het ook.
 
 ## Draaiboek woensdag 16 september

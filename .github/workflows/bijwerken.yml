@@ -26,13 +26,22 @@ jobs:
     timeout-minutes: 20
     env:
       APB_BRON: GitHub Actions
-      APB_INTERVAL_MIN: "10"
     steps:
       - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+
+      - name: Pollinterval bepalen
+        # Alleen 16–18 sep draait het schema elke 10 min; anders dagelijks. De viewer waarschuwt op basis hiervan.
+        run: |
+          vandaag=$(TZ=Europe/Amsterdam date +%F)
+          if [[ "$vandaag" > "2026-09-15" && "$vandaag" < "2026-09-19" ]]; then
+            echo "APB_INTERVAL_MIN=10" >> "$GITHUB_ENV"
+          else
+            echo "APB_INTERVAL_MIN=1440" >> "$GITHUB_ENV"
+          fi
 
       - name: Verslagen ophalen
         # Een storing bij de Kamer mag de publicatie niet tegenhouden; de viewer toont de fout.

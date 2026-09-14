@@ -416,6 +416,7 @@ function klok(iso, metDatum = false) {
   const t = d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' });
   return metDatum && !vandaag ? `${d.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Europe/Amsterdam' })} ${t}` : t;
 }
+const intervalTekst = min => !min ? 'regelmatig' : min >= 1440 ? 'dagelijks' : min >= 60 ? `elk ${Math.round(min / 60)} uur` : `elke ${min} min`;
 function geleden(iso) {
   const min = Math.round((Date.now() - datum(iso)) / 60000);
   if (min < 2) return 'zojuist';
@@ -615,7 +616,7 @@ function bijwerkenDatastatus() {
   knop.className = 'versheid ' + klasse;
   knop.innerHTML = html;
   knop.title = [
-    st.gecontroleerd_op ? `Laatst gecontroleerd bij de Tweede Kamer: ${klok(st.gecontroleerd_op, true)} (${st.bron || 'onbekend'}, elke ${st.interval_min} min)` : null,
+    st.gecontroleerd_op ? `Laatst gecontroleerd bij de Tweede Kamer: ${klok(st.gecontroleerd_op, true)} (${st.bron || 'onbekend'}, ${intervalTekst(st.interval_min)})` : null,
     st.fout ? `Fout: ${st.fout}` : null,
     kamer ? `Nieuwste verslagversie van de Kamer: ${klok(kamer, true)}` : null,
     m.laatst_opgehaald_op ? `Laatste nieuwe versie binnengehaald: ${klok(m.laatst_opgehaald_op, true)}` : null,
@@ -1384,7 +1385,7 @@ function toonBronnen() {
   const m = S.data.meta;
   const st = S.status || {};
   let h = `<h3>Actualiteit</h3><p>`;
-  if (st.gecontroleerd_op) h += `Laatst gecontroleerd bij de Tweede Kamer: <b>${esc(klok(st.gecontroleerd_op, true))}</b> (${esc(geleden(st.gecontroleerd_op))}) — ${st.resultaat === 'fout' ? `<b style="color:var(--ongecorr)">mislukt: ${esc(st.fout)}</b>` : 'gelukt'}. Er wordt elke ${esc(st.interval_min)} min gecontroleerd (${esc(st.bron)}).<br>`;
+  if (st.gecontroleerd_op) h += `Laatst gecontroleerd bij de Tweede Kamer: <b>${esc(klok(st.gecontroleerd_op, true))}</b> (${esc(geleden(st.gecontroleerd_op))}) — ${st.resultaat === 'fout' ? `<b style="color:var(--ongecorr)">mislukt: ${esc(st.fout)}</b>` : 'gelukt'}. Er wordt ${esc(intervalTekst(st.interval_min))} gecontroleerd (${esc(st.bron)}); tijdens de APB (16–18 september) elke 10 minuten.<br>`;
   h += `Laatste nieuwe verslagversie binnengehaald: ${esc(klok(m.laatst_opgehaald_op, true))}. Data verwerkt: ${esc(klok(m.gegenereerd_op, true))}.<br>`;
   h += `De Kamer publiceert tijdens de vergadering met vertraging (bij de test: eerste versie ~1¾ uur na aanvang, daarna elke 30–90 min). Per fragment geldt de nieuwste versie waarin het voorkomt; eerdere versies blijven in het archief bewaard.</p>`;
   if (location.protocol.startsWith('http')) h += `<p><a href="apb-offline.html" download>Download de offline versie</a> — de hele viewer met deze data in één bestand, te openen zonder internet (ververst niet vanzelf).</p>`;
