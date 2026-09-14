@@ -1390,7 +1390,7 @@ function toonBronnen() {
   h += `De Kamer publiceert tijdens de vergadering met vertraging (bij de test: eerste versie ~1¾ uur na aanvang, daarna elke 30–90 min). Per fragment geldt de nieuwste versie waarin het voorkomt; eerdere versies blijven in het archief bewaard.</p>`;
   if (location.protocol.startsWith('http')) {
     h += `<p><a href="apb-offline.html" download>Download de offline versie</a> — de hele viewer met deze data in één bestand, te openen zonder internet (ververst niet vanzelf).</p>`;
-    h += `<p><a href="gemini/index.md" target="_blank" rel="noopener">Leesbare bestanden voor Gemini en andere taalmodellen</a> — dezelfde tekst als de exports, per dag, termijn en beurt, automatisch bijgewerkt. Geef een taalmodel dat adres en het hoeft niet te exporteren.</p>`;
+    h += `<p><a href="gemini/index.md" target="_blank" rel="noopener">Leesbare bestanden voor Gemini en andere taalmodellen</a> — dezelfde tekst als de exports, per dag, termijn en beurt, automatisch bijgewerkt. Geef een taalmodel dat adres en het hoeft niet te exporteren. De bijbehorende <a href="gemini-prompt.md" target="_blank" rel="noopener">instructies voor Gemini</a> plak je als eerste bericht in een nieuwe chat.</p>`;
   }
   for (const d of S.data.dagen) {
     const actueel = new Set(d.actuele_bronnen.map(b => b.verslag_id));

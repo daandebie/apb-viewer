@@ -15,7 +15,7 @@ Alles is Python-stdlib (systeem-`python3` 3.9 volstaat), de viewer is één HTML
 
 - **Viewer:** https://daandebie.github.io/apb-viewer/ — openbaar via de link, niet geïndexeerd (`noindex` + `robots.txt`)
 - **Demo met testdata** (3–4 juni 2026, stand 4 juni 16:00): https://daandebie.github.io/apb-viewer/demo/
-- **Voor Gemini / taalmodellen:** https://daandebie.github.io/apb-viewer/gemini/index.md — leesbare bestanden per dag, termijn en beurt (zelfde opmaak als de exportknop, ook als `.txt`), elke run opnieuw gemaakt door `export.py`. Prompt voor Gemini: `gemini-prompt-apb.md`.
+- **Voor Gemini / taalmodellen:** https://daandebie.github.io/apb-viewer/gemini/index.md — leesbare bestanden per dag, termijn en beurt (zelfde opmaak als de exportknop, ook als `.txt`), elke run opnieuw gemaakt door `export.py`. Prompt voor Gemini: https://daandebie.github.io/apb-viewer/gemini-prompt.md (bron: `gemini-prompt-apb.md`).
 - **Runs:** https://github.com/daandebie/apb-viewer/actions
 
 GitHub Actions (`.github/workflows/bijwerken.yml`) doet het werk, je laptop hoeft niet aan:

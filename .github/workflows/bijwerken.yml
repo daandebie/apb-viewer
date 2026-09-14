@@ -94,6 +94,9 @@ jobs:
             cp data/samenvattingen.json _site/data/
             cp data/samenvattingen.json _site/demo/data/
           fi
+          # De Gemini-instructies moeten bereikbaar blijven, ook als de repo privé is.
+          cp gemini-prompt-apb.md _site/gemini-prompt.md
+          cp gemini-prompt-apb.md _site/gemini-prompt.txt
           printf 'User-agent: *\nDisallow: /\n' > _site/robots.txt
           touch _site/.nojekyll
 
