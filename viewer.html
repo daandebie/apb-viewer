@@ -1,0 +1,1594 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>APB-viewer — ongecorrigeerde verslagen</title>
+<style>
+:root {
+  --bg: #f6f4ef; --paper: #fffdf9; --ink: #1d1e20; --ink-2: #4b4e54; --ink-3: #7c7f86; --line: #e3dfd5; --line-2: #d3cec2;
+  --accent: #1f4e79; --accent-bg: #e8eef6; --mark: #ffe58a; --mark-actief: #ffb000;
+  --warn-bg: #8a2c0d; --warn-ink: #fff7ed;
+  --ongecorr: #c2410c; --gecorr: #15803d; --gerect: #1d4ed8; --casco: #6b7280;
+  --sam-bg: #eaf1fb; --sam-line: #7ea3d6; --sam-ink: #1e3a5f;
+  --interruptie-bg: #f8f5ee;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria, Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --tekst: 18px;
+  --banner-h: 40px; --kop-h: 96px; --top: calc(var(--banner-h) + var(--kop-h));
+  color-scheme: light;
+}
+:root[data-thema="donker"] {
+  --bg: #141518; --paper: #1b1d21; --ink: #e7e4dd; --ink-2: #b4b1aa; --ink-3: #85837d; --line: #2d3036; --line-2: #3a3e45;
+  --accent: #8cb4e6; --accent-bg: #1f2a38; --mark: #6b5310; --mark-actief: #a86f00;
+  --warn-bg: #7a260b;
+  --sam-bg: #17263a; --sam-line: #3f6699; --sam-ink: #c9dbf3; --interruptie-bg: #202227;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-thema="licht"]) {
+    --bg: #141518; --paper: #1b1d21; --ink: #e7e4dd; --ink-2: #b4b1aa; --ink-3: #85837d; --line: #2d3036; --line-2: #3a3e45;
+    --accent: #8cb4e6; --accent-bg: #1f2a38; --mark: #6b5310; --mark-actief: #a86f00;
+    --warn-bg: #7a260b;
+    --sam-bg: #17263a; --sam-line: #3f6699; --sam-ink: #c9dbf3; --interruptie-bg: #202227;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--sans); padding-top: var(--banner-h); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent); }
+
+/* ---------- disclaimerbalk: altijd zichtbaar, niet wegklikbaar ---------- */
+#disclaimer {
+  position: fixed; inset: 0 0 auto 0; z-index: 1000; background: var(--warn-bg); color: var(--warn-ink);
+  padding: 9px 16px; font: 13.5px/1.35 var(--sans); text-align: center; box-shadow: 0 1px 0 rgba(0,0,0,.25);
+}
+#disclaimer strong { letter-spacing: .02em; text-transform: uppercase; }
+#disclaimer a { color: inherit; font-weight: 600; }
+
+/* ---------- kopbalk ---------- */
+.kop { position: sticky; top: var(--banner-h); z-index: 900; background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.kop-rij { display: flex; align-items: center; gap: 12px 16px; padding: 8px 16px; flex-wrap: wrap; }
+.kop-rij.rij2 { padding-top: 0; min-height: 34px; font-size: 13px; }
+.merk { font: 700 15px var(--sans); letter-spacing: .01em; white-space: nowrap; }
+.merk span { font-weight: 400; color: var(--ink-3); }
+.tabs { display: flex; gap: 2px; background: var(--line); padding: 2px; border-radius: 8px; }
+.tabs button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; white-space: nowrap; color: var(--ink-2); }
+.tabs button[aria-selected="true"] { background: var(--paper); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.tabs button small { color: var(--ink-3); font-weight: 400; margin-left: 4px; }
+.zoek { display: flex; align-items: center; gap: 6px; flex: 1 1 360px; min-width: 260px; }
+.zoek input[type=search] { flex: 1; min-width: 0; padding: 7px 10px; border: 1px solid var(--line-2); border-radius: 7px; background: var(--paper); }
+.zoek input[type=search]:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+#teller { font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; min-width: 7ch; }
+.knop, .zoek button, .knoppen button { border: 1px solid var(--line-2); background: var(--paper); border-radius: 7px; padding: 6px 10px; white-space: nowrap; }
+.knop:hover, .zoek button:hover, .knoppen button:hover { border-color: var(--ink-3); }
+.knoppen { display: flex; gap: 6px; margin-left: auto; }
+.klein { font-size: 12.5px; color: var(--ink-2); white-space: nowrap; display: inline-flex; gap: 4px; align-items: center; }
+#chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; flex: 1 1 auto; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--paper); border-radius: 999px; padding: 2px 4px 2px 10px; font-size: 12.5px; }
+.chip button { border: 0; background: var(--line); width: 18px; height: 18px; border-radius: 50%; line-height: 16px; padding: 0; font-size: 12px; }
+.chip button:hover { background: var(--ink-3); color: var(--paper); }
+.chip.wis { background: transparent; border-style: dashed; padding: 2px 10px; cursor: pointer; }
+#resultaat { color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.versheid { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-2); background: var(--paper); border-radius: 999px; padding: 3px 12px 3px 9px; font-size: 12.5px; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.versheid b { color: var(--ink); font-weight: 600; }
+.versheid .stip { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); flex: none; }
+.versheid.ok .stip { background: var(--gecorr); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gecorr) 22%, transparent); }
+.versheid.oud { border-color: #d97706; }
+.versheid.oud .stip { background: #d97706; }
+.versheid.fout { border-color: var(--ongecorr); }
+.versheid.fout .stip { background: var(--ongecorr); }
+.versheid.fout b, .versheid.oud b { color: var(--ongecorr); }
+.versheid.demo { border-style: dashed; }
+.notitie-balk { background: var(--accent-bg); color: var(--ink); padding: 7px 16px; font-size: 13.5px; border-top: 1px solid var(--line); }
+.notitie-balk a { font-weight: 600; }
+.dag-kop .versie { font-variant-numeric: tabular-nums; }
+#update { background: var(--accent); color: #fff; border: 0; border-radius: 7px; padding: 4px 10px; font-weight: 600; }
+
+/* ---------- indeling ---------- */
+.lay { display: grid; grid-template-columns: 270px minmax(0, 1fr) 300px; gap: 0; align-items: start; }
+.zijbalk { position: sticky; top: var(--top); height: calc(100vh - var(--top)); overflow: auto; padding: 14px 16px 40px; font-size: 13px; }
+.zijbalk.links { border-right: 1px solid var(--line); }
+.zijbalk.rechts { border-left: 1px solid var(--line); padding-left: 10px; padding-right: 10px; }
+main { min-width: 0; padding: 0 28px 40vh; }
+.fg { margin-bottom: 18px; }
+.fg h4 { margin: 0 0 6px; font: 600 11.5px var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); display: flex; justify-content: space-between; align-items: baseline; }
+.fg h4 small, .fg h4 label { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.fg label.rij { display: flex; align-items: center; gap: 7px; padding: 2px 0; cursor: pointer; }
+.fg label.rij .n { margin-left: auto; color: var(--ink-3); font-variant-numeric: tabular-nums; font-size: 12px; }
+.fg .snel { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.fg .snel button { border: 1px solid var(--line-2); background: var(--paper); border-radius: 6px; padding: 3px 8px; font-size: 12px; }
+.fg input[type=time] { border: 1px solid var(--line-2); border-radius: 6px; padding: 3px 6px; background: var(--paper); }
+.fg input[type=search] { width: 100%; border: 1px solid var(--line-2); border-radius: 6px; padding: 4px 8px; background: var(--paper); margin-bottom: 6px; }
+.lijst-scroll { max-height: 42vh; overflow: auto; padding-right: 4px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--ink-3)); flex: none; }
+
+/* ---------- sprekersvolgorde ---------- */
+.vg-kop { margin: 14px 4px 4px; font: 600 12px var(--sans); color: var(--ink-2); }
+.vg-kop.tm { margin-top: 4px; font-weight: 400; color: var(--ink-3); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+.vg-dag { margin: 4px 4px 0; font: 700 13px var(--sans); }
+.vg { display: grid; grid-template-columns: 12px minmax(0,1fr) auto; column-gap: 7px; row-gap: 0; align-items: center; width: 100%; text-align: left; border: 0; background: transparent; padding: 5px 6px; border-radius: 6px; }
+.vg:hover { background: var(--line); }
+.vg.actief { background: var(--accent-bg); box-shadow: inset 3px 0 0 var(--accent); }
+.vg .vg-naam { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vg .vg-fr { color: var(--ink-2); font-size: 12px; text-align: right; white-space: nowrap; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.vg .vg-tijd { grid-column: 2 / 4; color: var(--ink-3); font: 11.5px var(--mono); font-variant-numeric: tabular-nums; }
+.vg.vz .vg-naam { font-weight: 400; color: var(--ink-2); }
+.vg.leeg { opacity: .45; }
+
+/* ---------- blokken ---------- */
+.dag-kop { padding: 26px 0 8px; border-bottom: 2px solid var(--ink); margin-bottom: 4px; }
+.dag-kop h1 { font: 700 26px/1.2 var(--serif); margin: 0 0 4px; }
+.dag-kop p { margin: 2px 0; color: var(--ink-2); }
+.dag-kop .let-op { color: var(--ongecorr); font-weight: 600; }
+.blok-kop { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.blok-kop .acties { margin-left: auto; display: flex; gap: 4px; }
+.blok-kop .acties button, .frag-kop .acties button { border: 1px solid transparent; background: transparent; color: var(--ink-3); border-radius: 5px; padding: 1px 6px; font-size: 12px; }
+.blok-kop .acties button:hover, .frag-kop .acties button:hover { border-color: var(--line-2); color: var(--ink); background: var(--paper); }
+.klap { border: 0; background: transparent; width: 22px; height: 22px; border-radius: 5px; color: var(--ink-3); padding: 0; transition: transform .12s; }
+.klap:hover { background: var(--line); color: var(--ink); }
+.blok.dicht > .blok-kop .klap { transform: rotate(-90deg); }
+.blok.dicht > .blok-inhoud { display: none; }
+.blok.dicht > .blok-kop::after { content: attr(data-samenvatting-dicht); color: var(--ink-3); font-size: 12px; }
+.ap-kop { padding: 26px 0 6px; }
+.ap-kop h2 { font: 700 21px/1.25 var(--serif); margin: 0; flex: 1 1 300px; }
+.ap-kop .meta { color: var(--ink-3); font-size: 12.5px; width: 100%; padding-left: 30px; }
+.tm-kop { padding: 14px 0 4px; }
+.tm-kop h3 { font: 600 12.5px var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); margin: 0; }
+.tm-kop .meta { color: var(--ink-3); font-size: 12px; }
+.beurt { margin: 10px 0 18px; }
+.beurt-kop { position: sticky; top: var(--top); z-index: 20; background: var(--bg); padding: 7px 0 6px; border-bottom: 1px solid var(--line); font-size: 13.5px; flex-wrap: nowrap; white-space: nowrap; }
+.beurt-kop b { font-size: 14.5px; }
+.beurt-kop .fr { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 0 1 auto; }
+.beurt-kop .tijden { color: var(--ink-3); font: 12px var(--mono); font-variant-numeric: tabular-nums; }
+.beurt-kop .intr { color: var(--ink-3); font-size: 12px; }
+.beurt.vz > .beurt-kop { position: static; background: transparent; border-bottom: 0; padding: 4px 0 0; font-size: 12px; color: var(--ink-3); }
+.beurt.vz > .beurt-kop b { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+
+/* ---------- fragmenten ---------- */
+.frag { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); column-gap: 1.1rem; padding: 12px 0; border-top: 1px solid var(--line); content-visibility: auto; contain-intrinsic-size: auto 180px; scroll-margin-top: calc(var(--top) + 52px); }
+.beurt > .blok-inhoud > .frag:first-child, .beurt-kop + .blok-inhoud > .sam + .frag { border-top: 0; }
+.gutter { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; padding-top: 2px; line-height: 1.3; }
+.gutter .t-begin { display: block; font-size: 14.5px; font-weight: 700; color: var(--ink); text-decoration: none; }
+.gutter .t-begin:hover { color: var(--accent); text-decoration: underline; }
+.gutter .t-eind { display: block; font-size: 12.5px; color: var(--ink-2); }
+.gutter .t-duur { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+.lijf { border-left: 3px solid var(--c, var(--line-2)); padding-left: 16px; min-width: 0; }
+.frag-kop { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13px; margin-bottom: 2px; }
+.frag-kop .wie { display: inline-flex; align-items: center; gap: 6px; }
+.frag-kop .wie b { font-size: 14.5px; }
+.frag-kop .fr { color: var(--ink-2); }
+.frag-kop .type { color: var(--ink-3); font-size: 12px; }
+.frag-kop .acties { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+.frag-kop .fid { font: 11.5px var(--mono); color: var(--ink-3); text-decoration: none; padding: 1px 4px; }
+.frag-kop .fid:hover { color: var(--accent); text-decoration: underline; }
+.badge { display: inline-block; font: 600 10.5px/1 var(--sans); letter-spacing: .04em; text-transform: uppercase; padding: 3px 6px 3px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+.badge.st-ongecorrigeerd, .badge.st-casco { background: var(--ongecorr); border-color: var(--ongecorr); color: #fff; }
+.badge.st-gecorrigeerd { color: var(--gecorr); }
+.badge.st-gerectificeerd { color: var(--gerect); }
+.badge.soort { color: var(--ink-3); border-color: var(--line-2); font-weight: 500; }
+.badge.gewijzigd { color: var(--gerect); border-style: dashed; cursor: pointer; background: transparent; }
+.frag-tekst { max-width: 70ch; }
+.frag-tekst p { font: var(--tekst)/1.62 var(--serif); margin: .45em 0; hyphens: manual; overflow-wrap: break-word; }
+.frag-tekst p .lbl { font-weight: 700; }
+.frag-tekst p.al-Motietekst, .frag-tekst p.al-Motieinfo { margin-left: 1.4rem; padding-left: .9rem; border-left: 2px solid var(--line-2); font-size: calc(var(--tekst) * .94); }
+.frag-tekst p.al-Motieinfo { color: var(--ink-2); }
+.frag-tekst p.al-lijstitem { margin-left: 1.4rem; text-indent: -1rem; padding-left: 1rem; }
+.frag-tekst p.al-lijstitem::before { content: "–\00a0\00a0"; color: var(--ink-3); }
+.frag-tekst p.leeg { color: var(--ink-3); font-style: italic; }
+mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+mark.actief { background: var(--mark-actief); outline: 2px solid var(--mark-actief); }
+.t-interruptie .lijf { margin-left: 1.4rem; background: var(--interruptie-bg); border-radius: 0 6px 6px 0; padding-top: 6px; padding-bottom: 4px; }
+.t-voorzitter .frag-tekst p { font-size: calc(var(--tekst) * .9); color: var(--ink-2); }
+.t-voorzitter .gutter .t-begin { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.t-procedure .frag-tekst p { font: italic calc(var(--tekst) * .88)/1.55 var(--serif); color: var(--ink-2); }
+.t-procedure .gutter .t-begin { font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
+.frag.flits .lijf { animation: flits 2.2s ease-out; }
+@keyframes flits { 0%, 30% { box-shadow: -3px 0 0 0 var(--c, var(--accent)), 0 0 0 4px var(--mark-actief); } 100% { box-shadow: none; } }
+.eerder { margin: 10px 0 4px; padding: 10px 12px; border: 1px dashed var(--line-2); border-radius: 6px; font-size: 13px; }
+.eerder h5 { margin: 0 0 6px; font: 600 12px var(--sans); color: var(--ink-2); }
+.eerder p { font: calc(var(--tekst) * .88)/1.55 var(--serif); margin: .4em 0; }
+.eerder del { background: color-mix(in srgb, #dc2626 18%, transparent); text-decoration: line-through; }
+.eerder ins { background: color-mix(in srgb, #16a34a 20%, transparent); text-decoration: none; }
+
+/* ---------- samenvattingen: nooit bron, altijd herkenbaar ---------- */
+.sam { margin: 10px 0 12px 7.7rem; background: var(--sam-bg); border: 1px solid var(--sam-line); border-left: 6px solid var(--sam-line); border-radius: 6px; padding: 10px 14px 12px; color: var(--sam-ink); max-width: calc(70ch + 20px); }
+.sam-label { font: 700 11.5px var(--sans); text-transform: uppercase; letter-spacing: .08em; }
+.sam-label::before { content: "◇ "; }
+.sam-sub { font-size: 12px; opacity: .85; margin: 2px 0 6px; }
+.sam-tekst { font: 15px/1.55 var(--sans); }
+.sam.kort .sam-tekst { max-height: 9.5em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent); }
+.sam-meer { border: 0; background: transparent; color: var(--accent); padding: 2px 0; font-size: 12.5px; cursor: pointer; }
+.sam-tekst p { margin: .35em 0; }
+.sam-waarschuwing { font-weight: 700; color: var(--ongecorr); }
+body.geen-sam .sam { display: none; }
+
+/* ---------- menu, toast, dialoog ---------- */
+.menu { position: fixed; z-index: 2000; background: var(--paper); border: 1px solid var(--line-2); border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,.18); padding: 5px; min-width: 240px; max-width: 360px; }
+.menu button, .menu label { display: flex; width: 100%; text-align: left; border: 0; background: transparent; padding: 7px 10px; border-radius: 5px; gap: 8px; align-items: center; }
+.menu button:hover { background: var(--accent-bg); }
+.menu button small { margin-left: auto; color: var(--ink-3); }
+.menu hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
+.menu .menu-kop { padding: 6px 10px 2px; font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+#toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 16px; border-radius: 8px; z-index: 2100; font-size: 13.5px; box-shadow: 0 6px 20px rgba(0,0,0,.25); max-width: min(90vw, 640px); }
+dialog { border: 1px solid var(--line-2); border-radius: 10px; background: var(--paper); color: var(--ink); max-width: min(1000px, 94vw); padding: 0; }
+dialog::backdrop { background: rgba(0,0,0,.35); }
+.dlg-kop { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--paper); }
+.dlg-kop h2 { margin: 0; font-size: 16px; }
+.dlg-inhoud { padding: 6px 18px 18px; max-height: 75vh; overflow: auto; }
+table.bronnen { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+table.bronnen th, table.bronnen td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.bronnen td.id { font-family: var(--mono); font-size: 11.5px; }
+table.bronnen tr.actueel td { font-weight: 600; }
+.leeg-melding { padding: 40px 0; color: var(--ink-2); font-size: 16px; }
+.laadfout { max-width: 640px; margin: 60px auto; padding: 0 20px; font-size: 15px; }
+.laadfout code { background: var(--line); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------- smallere schermen ---------- */
+.smal { display: none; }
+@media (max-width: 1280px) {
+  .lay { grid-template-columns: 250px minmax(0, 1fr); }
+  .zijbalk.rechts { display: none; position: fixed; right: 0; top: var(--top); width: 320px; background: var(--paper); z-index: 800; box-shadow: -8px 0 24px rgba(0,0,0,.12); }
+  body.toon-volgorde .zijbalk.rechts { display: block; }
+  #volgordeToggle { display: inline-block; }
+}
+@media (max-width: 900px) {
+  .lay { grid-template-columns: minmax(0, 1fr); }
+  .zijbalk.links { display: none; position: fixed; left: 0; top: var(--top); width: 300px; background: var(--paper); z-index: 800; box-shadow: 8px 0 24px rgba(0,0,0,.12); }
+  body.toon-filters .zijbalk.links { display: block; }
+  #filterToggle { display: inline-block; }
+  main { padding: 0 16px 40vh; }
+  .frag { grid-template-columns: minmax(0, 1fr); }
+  .gutter { text-align: left; display: flex; gap: 8px; align-items: baseline; }
+  .gutter .t-begin, .gutter .t-eind, .gutter .t-duur { display: inline; }
+  .sam { margin-left: 0; }
+  .t-interruptie .lijf { margin-left: .6rem; }
+}
+
+/* ---------- afdrukken: waarschuwing op elke pagina, status bij elk fragment ---------- */
+@page {
+  margin: 18mm 14mm 14mm;
+  @top-center { content: "Ongecorrigeerd stenogram tenzij anders vermeld — geen rechten aan te ontlenen, niet letterlijk citeren — definitieve tekst: Handelingen (officielebekendmakingen.nl)"; font: 8pt sans-serif; color: #000; }
+}
+@media print {
+  :root, :root[data-thema], :root:not([data-thema="licht"]) {
+    --bg: #fff; --paper: #fff; --ink: #000; --ink-2: #222; --ink-3: #555; --line: #bbb; --line-2: #999;
+    --accent: #1f4e79; --accent-bg: #eef2f7; --mark: #ffe58a; --sam-bg: #eef3fb; --sam-line: #7ea3d6; --sam-ink: #000; --interruptie-bg: #f4f4f4;
+    color-scheme: light;
+  }
+  :root { --banner-h: 0px; --kop-h: 0px; }
+  .frag-kop::before { content: "⚠ " attr(data-status) " — niet letterlijk citeren; definitieve tekst in de Handelingen"; display: block; width: 100%; font: 7.5pt var(--sans); color: #000; }
+  body { background: #fff; padding-top: 0; }
+  #disclaimer { position: static; background: #fff; color: #000; border: 2px solid #000; font-size: 10pt; margin-bottom: 8pt; }
+  .ap-kop::after, .beurt-kop::after { content: "Ongecorrigeerd stenogram tenzij anders vermeld — geen rechten aan te ontlenen, niet letterlijk citeren; definitieve tekst: Handelingen (officielebekendmakingen.nl)"; display: block; width: 100%; font: 8pt var(--sans); color: #000; }
+  .beurt-kop { flex-wrap: wrap; white-space: normal; }
+  .kop, .zijbalk, .acties, .klap, #toast, .menu { display: none !important; }
+  .lay { display: block; }
+  main { padding: 0; }
+  .beurt-kop { position: static; }
+  .frag { content-visibility: visible; break-inside: avoid-page; }
+  .badge.st-ongecorrigeerd, .badge.st-casco { background: #fff; color: #000; border: 1.5px solid #000; }
+  .blok.dicht > .blok-inhoud { display: block; }
+}
+</style>
+</head>
+<body>
+
+<div id="disclaimer" role="note" aria-live="polite">
+  <strong>⚠ Ongecorrigeerd verslag</strong> — hieraan kunnen geen rechten worden ontleend en er mag niet letterlijk uit worden geciteerd.
+  De definitieve tekst staat in de Handelingen op <a href="https://www.officielebekendmakingen.nl/" target="_blank" rel="noopener">officielebekendmakingen.nl</a>.
+</div>
+
+<header class="kop" id="kop">
+  <div class="kop-rij">
+    <div class="merk">APB <span>viewer</span></div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Dag"></nav>
+    <div class="zoek">
+      <input id="q" type="search" placeholder="Zoek in alle teksten   ( / )" autocomplete="off" spellcheck="false" aria-label="Zoeken">
+      <span id="teller" aria-live="polite"></span>
+      <button id="vorige" title="Vorige treffer (Shift+Enter)" aria-label="Vorige treffer">↑</button>
+      <button id="volgende" title="Volgende treffer (Enter)" aria-label="Volgende treffer">↓</button>
+      <label class="klein" title="Uit: alle fragmenten tonen, treffers alleen markeren"><input type="checkbox" id="alleenTreffers" checked> alleen treffers</label>
+    </div>
+    <div class="knoppen">
+      <button id="filterToggle" class="smal">Filters</button>
+      <button id="volgordeToggle" class="smal">Sprekers</button>
+      <button id="exportKnop" aria-haspopup="menu">Exporteer ▾</button>
+      <button id="bronKnop">Bronnen</button>
+      <button id="weergaveKnop" aria-haspopup="menu" title="Weergave">Aa</button>
+    </div>
+  </div>
+  <div class="kop-rij rij2">
+    <div id="chips"></div>
+    <button id="update" hidden></button>
+    <span id="resultaat"></span>
+    <button id="datastatus" class="versheid" type="button" title="Details over bronnen en ophalen"></button>
+  </div>
+  <div id="notitie" class="notitie-balk" hidden></div>
+</header>
+
+<div class="lay">
+  <aside class="zijbalk links" id="filters" aria-label="Filters">
+    <section class="fg">
+      <h4>Soort bijdrage</h4>
+      <div id="typelijst"></div>
+      <div class="snel">
+        <button data-snel="hoofd">Alleen hoofdtermijnen</button>
+        <button data-snel="alles">Inclusief interrupties</button>
+      </div>
+    </section>
+    <section class="fg">
+      <h4>Tijdvak <small>begintijd</small></h4>
+      <input type="time" id="van" aria-label="Vanaf"> – <input type="time" id="tot" aria-label="Tot">
+    </section>
+    <section class="fg">
+      <h4>Fracties <small>fractie óf spreker</small></h4>
+      <div id="fractielijst" class="lijst-scroll"></div>
+    </section>
+    <section class="fg">
+      <h4>Sprekers</h4>
+      <input type="search" id="sprekerzoek" placeholder="Zoek spreker" autocomplete="off">
+      <div id="sprekerlijst" class="lijst-scroll"></div>
+    </section>
+  </aside>
+
+  <main id="tekst" aria-live="off"></main>
+
+  <aside class="zijbalk rechts" id="volgorde" aria-label="Sprekersvolgorde"></aside>
+</div>
+
+<div id="menu" class="menu" role="menu" hidden></div>
+<div id="toast" role="status" hidden></div>
+
+<dialog id="bronnen">
+  <div class="dlg-kop"><h2>Bronverslagen en statussen</h2><button class="knop" data-sluit>Sluiten</button></div>
+  <div class="dlg-inhoud" id="bronnenInhoud"></div>
+</dialog>
+
+<!-- Door parse.py gevuld in apb-offline.html; in viewer.html leeg zodat data/apb.json wordt geladen. -->
+<script type="application/json" id="apb-data"></script>
+<script type="application/json" id="samenvattingen-data"></script>
+<script type="application/json" id="status-data"></script>
+
+<script>
+'use strict';
+
+const HANDELINGEN = 'https://www.officielebekendmakingen.nl/';
+const TYPES = ['hoofdtermijn', 'interruptie', 'voorzitter', 'procedure'];
+const TYPE_LABEL = { hoofdtermijn: 'Hoofdtermijn', interruptie: 'Interrupties', voorzitter: 'Voorzitter', procedure: 'Procedure' };
+// Alles wat niet expliciet gecorrigeerd is (ook een ontbrekende of onbekende status) krijgt de strenge waarschuwing.
+const MILD = new Set(['Gecorrigeerd', 'Gerectificeerd']);
+const isStreng = f => !MILD.has(f.bron.status);
+
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const S = {
+  data: null, sam: { samenvattingen: [] },
+  fr: [], byId: new Map(), blok: new Map(), groepen: new Map(), samPerBlok: new Map(), samPerFragment: new Map(),
+  view: null, zicht: [],
+  f: { q: '', alleenTreffers: true, groepen: new Set(), sprekers: new Set(), types: new Set(TYPES), van: '', tot: '' },
+  dicht: new Set(), treffers: new Map(), gemarkeerd: new Map(), hitIdx: -1, hits: null,
+  pref: { grootte: 18, thema: 'auto', formaat: 'md', sam: true, vz: false },
+  klembordWacht: null, nieuweData: null, status: {},
+};
+
+/* ================================================================ voorkeuren (alleen weergave) */
+
+function laadPref() {
+  try { Object.assign(S.pref, JSON.parse(localStorage.getItem('apb-pref') || '{}')); } catch (e) { /* privévenster */ }
+  pasPrefToe();
+}
+function bewaarPref() {
+  try { localStorage.setItem('apb-pref', JSON.stringify(S.pref)); } catch (e) { /* geen opslag */ }
+  pasPrefToe();
+}
+function pasPrefToe() {
+  document.documentElement.style.setProperty('--tekst', S.pref.grootte + 'px');
+  if (S.pref.thema === 'auto') delete document.documentElement.dataset.thema; else document.documentElement.dataset.thema = S.pref.thema;
+  document.body.classList.toggle('geen-sam', !S.pref.sam);
+}
+
+/* ================================================================ opmaakhulpjes */
+
+const tijd = iso => iso ? iso.slice(11, 19) : '';
+const hhmm = iso => iso ? iso.slice(11, 16) : '';
+function duur(s) {
+  if (s == null) return '';
+  if (s < 60) return s + 's';
+  const u = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  return u ? `${u}u${String(m).padStart(2, '0')}m` : `${m}m${String(sec).padStart(2, '0')}s`;
+}
+const getal = n => n.toLocaleString('nl-NL');
+// De API levert tot 7 decimalen; niet elke browser leest dat.
+const datum = iso => new Date(String(iso).replace(/(\.\d{3})\d+/, '$1'));
+function klok(iso, metDatum = false) {
+  if (!iso) return '—';
+  const d = datum(iso);
+  if (isNaN(d)) return iso;
+  const vandaag = d.toLocaleDateString('nl-NL', { timeZone: 'Europe/Amsterdam' }) === new Date().toLocaleDateString('nl-NL', { timeZone: 'Europe/Amsterdam' });
+  const t = d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' });
+  return metDatum && !vandaag ? `${d.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Europe/Amsterdam' })} ${t}` : t;
+}
+function geleden(iso) {
+  const min = Math.round((Date.now() - datum(iso)) / 60000);
+  if (min < 2) return 'zojuist';
+  if (min < 60) return `${min} min geleden`;
+  const u = Math.floor(min / 60);
+  return u < 48 ? `${u} u ${min % 60} min geleden` : `${Math.floor(u / 24)} dagen geleden`;
+}
+function datumTijd(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return d.toLocaleString('nl-NL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+const kleurVan = groep => (S.groepen.get(groep) || {}).kleur || hashKleur(groep);
+function hashKleur(s) {
+  let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return `hsl(${h % 360} 45% 42%)`;
+}
+function wieTekst(f) {
+  if (f.type === 'procedure') return `Procedure — ${f.procedure_soort || 'tekst'}`;
+  const naam = f.naam || 'Onbekende spreker';
+  if (f.categorie === 'fractie') return `${naam} (${f.fractie})`;
+  if (f.categorie === 'voorzitter') return `${naam} (voorzitter)`;
+  return `${naam} (${f.functie || f.groep})`;
+}
+const statusWoord = f => (f.bron.status || 'onbekend').toUpperCase();
+
+/* ================================================================ zoeken: accent- en hoofdletterongevoelig, posities 1-op-1 */
+
+const foldCache = new Map();
+function fold(s) {
+  let o = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    let r = foldCache.get(c);
+    if (r === undefined) {
+      r = c.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      if (r.length !== 1) r = c.toLowerCase();
+      if (r.length !== 1) r = c;
+      foldCache.set(c, r);
+    }
+    o += r;
+  }
+  return o;
+}
+function termen(q) {
+  const t = [];
+  // Een nog niet gesloten aanhalingsteken is tijdens het typen gewoon een scheidingsteken.
+  q.replace(/"([^"]+)"|([^\s"]+)/g, (_, zin, woord) => {
+    const x = fold((zin || woord).trim());
+    if (x.length >= 2 || /\d/.test(x)) t.push(x);
+  });
+  return t;
+}
+function zoek(f, terms) {
+  const r = [];
+  for (const t of terms) {
+    let i = f._fold.indexOf(t);
+    if (i < 0) return null;
+    while (i >= 0) { r.push([i, i + t.length]); i = f._fold.indexOf(t, i + t.length); }
+  }
+  return r.sort((a, b) => a[0] - b[0]);
+}
+
+/* ================================================================ data laden */
+
+async function laad() {
+  laadPref();
+  const inb = $('#apb-data').textContent.trim();
+  if (inb) {
+    S.data = JSON.parse(inb);
+    const s = $('#samenvattingen-data').textContent.trim();
+    if (s) S.sam = JSON.parse(s);
+    const st = $('#status-data').textContent.trim();
+    if (st) S.status = JSON.parse(st);
+  } else {
+    try {
+      const r = await fetch('data/apb.json', { cache: 'no-cache' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      S.data = await r.json();
+    } catch (e) {
+      toonLaadfout(e);
+      return;
+    }
+    S.sam = await haalSamenvattingen() || S.sam;
+    S.status = await haalStatus() || S.status;
+  }
+  indexeer();
+  bouwTabs();
+  const hash = decodeURIComponent(location.hash.slice(1));
+  const start = S.byId.get(hash);
+  zetView(start ? start.dag : (S.data.dagen[0] || {}).datum || 'alle', { stil: true });
+  if (start) gaNaar(start.id, { geenHash: true });
+  if (location.protocol.startsWith('http')) setInterval(controleerUpdate, 60_000);
+  setInterval(bijwerkenDatastatus, 30_000);
+}
+
+async function haalStatus() {
+  try {
+    const r = await fetch('data/ophaalstatus.json', { cache: 'no-cache' });
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+
+async function haalSamenvattingen() {
+  try {
+    const r = await fetch('data/samenvattingen.json', { cache: 'no-cache' });
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+
+function toonLaadfout(e) {
+  $('.lay').innerHTML = `<div class="laadfout">
+    <h2>Geen data geladen</h2>
+    <p>De viewer kon <code>data/apb.json</code> niet lezen (${esc(e.message)}). Browsers blokkeren dat bij het openen via <code>file://</code>.</p>
+    <p>Twee manieren:</p>
+    <ol>
+      <li>Open <code>apb-offline.html</code> — daarin is de data ingesloten (wordt bij elke <code>parse.py</code>-run bijgewerkt).</li>
+      <li>Of start in de map <code>apb-viewer</code>: <code>python3 -m http.server 8765</code> en open <code>http://localhost:8765/viewer.html</code> (ververst zichzelf bij nieuwe data).</li>
+    </ol></div>`;
+}
+
+function indexeer() {
+  const d = S.data;
+  S.fr = d.fragmenten;
+  S.byId = new Map();
+  S.fr.forEach((f, i) => {
+    f._i = i;
+    S.byId.set(f.id, f);
+    let off = 0;
+    f._off = f.alineas.map(a => { const o = off; off += a.tekst.length + 1; return o; });
+    f._fold = fold(f.alineas.map(a => a.tekst).join('\n'));
+    f._spk = f.spreker ? f.spreker.objectid : null;
+    // Na middernacht doorgaan telt als 24:xx van de vergaderdag, zodat "vanaf 22:00" blijft kloppen.
+    f._hm = f.begin && f.begin.slice(0, 10) > f.dag ? String(24 + Number(f.begin.slice(11, 13))) + f.begin.slice(13, 16) : hhmm(f.begin);
+  });
+  S.blok = new Map();
+  for (const dag of d.dagen) {
+    for (const soort of ['agendapunten', 'termijnen', 'beurten']) for (const b of dag[soort]) S.blok.set(b.id, { ...b, _soort: soort, _dag: dag.datum });
+  }
+  S.groepen = new Map(d.fracties.map(x => [x.groep, x]));
+  S.samPerBlok = new Map(); S.samPerFragment = new Map();
+  for (const s of (S.sam.samenvattingen || [])) {
+    if (s.scope === 'fragment' || !s.blok_id || !S.blok.has(s.blok_id)) {
+      const doel = s.fragment_ids && s.fragment_ids.find(id => S.byId.has(id));
+      if (doel) (S.samPerFragment.get(doel) || S.samPerFragment.set(doel, []).get(doel)).push(s);
+    } else {
+      (S.samPerBlok.get(s.blok_id) || S.samPerBlok.set(s.blok_id, []).get(s.blok_id)).push(s);
+    }
+  }
+  bijwerkenDisclaimer();
+  bijwerkenDatastatus();
+}
+
+function bijwerkenDisclaimer() {
+  const streng = S.fr.length === 0 || S.fr.some(f => isStreng(f));
+  $('#disclaimer').innerHTML = streng
+    ? `<strong>⚠ Ongecorrigeerd verslag</strong> — hieraan kunnen geen rechten worden ontleend en er mag niet letterlijk uit worden geciteerd. De definitieve tekst staat in de Handelingen op <a href="${HANDELINGEN}" target="_blank" rel="noopener">officielebekendmakingen.nl</a>.`
+    : `<strong>⚠ Geen officiële publicatie</strong> — gecorrigeerde verslagen uit het Gegevensmagazijn; hieraan kunnen geen rechten worden ontleend en citeer niet letterlijk uit deze viewer. De definitieve tekst staat in de Handelingen op <a href="${HANDELINGEN}" target="_blank" rel="noopener">officielebekendmakingen.nl</a>.`;
+  meetKop();
+}
+
+function bijwerkenDatastatus() {
+  const m = S.data.meta, st = S.status || {};
+  const knop = $('#datastatus');
+  const dag = S.data.dagen.find(d => d.datum === S.view);
+  const dagen = dag ? [dag] : S.data.dagen;
+  const tekstTot = dagen.map(d => d.laatste_markeertijd).filter(Boolean).sort().pop();
+  const kamer = dagen.map(d => (st.dagen && st.dagen[d.datum] && st.dagen[d.datum].nieuwste_versie) ? st.dagen[d.datum].nieuwste_versie.gewijzigd_op : (d.actuele_bronnen[0] || {}).gewijzigd_op).filter(Boolean).sort().pop();
+  const staart = `${kamer ? ` · Kamer-versie ${klok(kamer, true)}` : ' · nog geen verslag'}${tekstTot ? ` · tekst t/m ${hhmm(tekstTot)}` : ''}`;
+  const offline = !location.protocol.startsWith('http');
+  let klasse, html;
+  if (m.notitie || m.peilmoment) {
+    klasse = 'demo';
+    html = `<span class="stip"></span><b>Momentopname</b>${m.peilmoment ? ` · stand ${klok(m.peilmoment, true)}` : ''}${tekstTot ? ` · tekst t/m ${hhmm(tekstTot)}` : ''}`;
+  } else if (!st.gecontroleerd_op) {
+    klasse = '';
+    html = `<span class="stip"></span><b>Opgehaald ${klok(m.laatst_opgehaald_op, true)}</b>${staart}`;
+  } else if (offline) {
+    klasse = 'demo';
+    html = `<span class="stip"></span><b>Momentopname</b> · gecontroleerd ${klok(st.gecontroleerd_op, true)}${staart}`;
+  } else {
+    const minuten = (Date.now() - datum(st.gecontroleerd_op)) / 60000;
+    // Geplande GitHub-runs lopen soms wat uit; pas bij ruim drie gemiste rondes waarschuwen.
+    const grens = Math.max(3.5 * (st.interval_min || 1), 20);
+    if (st.resultaat === 'fout') {
+      klasse = 'fout';
+      html = `<span class="stip"></span><b>Laatste controle mislukt</b> (${klok(st.gecontroleerd_op)})${staart}`;
+    } else if (minuten > grens) {
+      klasse = 'oud';
+      html = `<span class="stip"></span><b>Bijwerken loopt achter</b> · laatste controle ${geleden(st.gecontroleerd_op)}${staart}`;
+    } else {
+      klasse = 'ok';
+      html = `<span class="stip"></span><b>Gecontroleerd ${klok(st.gecontroleerd_op)}</b> (${geleden(st.gecontroleerd_op)})${staart}`;
+    }
+  }
+  knop.className = 'versheid ' + klasse;
+  knop.innerHTML = html;
+  knop.title = [
+    st.gecontroleerd_op ? `Laatst gecontroleerd bij de Tweede Kamer: ${klok(st.gecontroleerd_op, true)} (${st.bron || 'onbekend'}, elke ${st.interval_min} min)` : null,
+    st.fout ? `Fout: ${st.fout}` : null,
+    kamer ? `Nieuwste verslagversie van de Kamer: ${klok(kamer, true)}` : null,
+    m.laatst_opgehaald_op ? `Laatste nieuwe versie binnengehaald: ${klok(m.laatst_opgehaald_op, true)}` : null,
+    tekstTot ? `Verslagtekst loopt tot ${tijd(tekstTot)} (de Kamer publiceert met vertraging)` : null,
+    'Klik voor alle bronverslagen.',
+  ].filter(Boolean).join('\n');
+  const notitie = $('#notitie');
+  notitie.hidden = !m.notitie;
+  if (m.notitie) notitie.textContent = m.notitie;
+  meetKop();
+}
+
+/* ================================================================ weergave opbouwen */
+
+function bouwTabs() {
+  const tabs = S.data.dagen.map(d => `<button role="tab" data-view="${d.datum}">${esc(d.label)}<small>${esc(d.kort)}</small></button>`);
+  tabs.push(`<button role="tab" data-view="alle">Alle teksten</button>`);
+  $('#tabs').innerHTML = tabs.join('');
+}
+
+function zetView(view, { stil = false } = {}) {
+  S.view = view;
+  $$('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view)));
+  S.zicht = view === 'alle' ? S.fr : S.fr.filter(f => f.dag === view);
+  renderTekst();
+  renderVolgorde();
+  renderFilterlijsten();
+  pasFiltersToe();
+  bijwerkenDatastatus();
+  if (!stil) window.scrollTo({ top: 0 });
+}
+
+function renderTekst() {
+  const dagen = S.view === 'alle' ? S.data.dagen : S.data.dagen.filter(d => d.datum === S.view);
+  let h = '';
+  for (const dag of dagen) {
+    const fr = S.zicht.filter(f => f.dag === dag.datum);
+    h += dagKop(dag, fr);
+    if (!fr.length) {
+      const st = (S.status.dagen || {})[dag.datum];
+      const controle = S.status.gecontroleerd_op ? ` Laatst gecontroleerd om ${klok(S.status.gecontroleerd_op, true)}: ${st && st.vergadering_gevonden ? 'de vergadering staat klaar, maar er is nog geen verslagtekst' : 'de Kamer heeft de vergadering nog niet in het Gegevensmagazijn gezet'}.` : '';
+      const demo = S.data.meta.demo_url ? ` Intussen uitproberen? Bekijk de <a href="${esc(S.data.meta.demo_url)}">demo met testdata</a>.` : '';
+      h += `<p class="leeg-melding">Nog geen verslag beschikbaar voor ${esc(dag.lang)}. Nieuwe versies verschijnen hier automatisch zodra de Kamer ze publiceert — reken op ruim een uur na aanvang.${controle}${demo}</p>`;
+      continue;
+    }
+    let ap = null, tm = null, bt = null;
+    const sluitBt = () => { if (bt !== null) { h += '</div></div>'; bt = null; } };
+    const sluitTm = () => { sluitBt(); if (tm !== null) { h += '</div></section>'; tm = null; } };
+    const sluitAp = () => { sluitTm(); if (ap !== null) { h += '</div></section>'; ap = null; } };
+    for (const f of fr) {
+      if (f.agendapunt_id !== ap) { sluitAp(); ap = f.agendapunt_id; h += blokOpen('agendapunten', ap); }
+      if ((f.termijn_id || '') !== (tm || '')) { sluitTm(); if (f.termijn_id) { tm = f.termijn_id; h += blokOpen('termijnen', tm); } }
+      if ((f.beurt_id || '') !== (bt || '')) { sluitBt(); if (f.beurt_id) { bt = f.beurt_id; h += blokOpen('beurten', bt); } }
+      for (const s of S.samPerFragment.get(f.id) || []) h += samHtml(s);
+      h += fragHtml(f);
+    }
+    sluitAp();
+  }
+  $('#tekst').innerHTML = h;
+  S.gemarkeerd.clear();
+  S.hits = null;
+}
+
+function dagKop(dag, fr) {
+  const bronnen = dag.actuele_bronnen.map(b => `${b.soort} / ${b.status}`).join(', ') || 'nog geen verslag';
+  const streng = !fr.length || fr.some(f => isStreng(f));
+  const actueel = dag.actuele_bronnen[0] || {};
+  const versie = fr.length
+    ? `<p class="versie"><b>Tekst loopt t/m ${esc(tijd(dag.laatste_markeertijd)) || '—'}</b> · nieuwste Kamer-versie ${esc(klok(actueel.gewijzigd_op || actueel.api_gewijzigd_op, true))} (${esc(bronnen)}) · door ons opgehaald ${esc(klok(actueel.opgehaald_op, true))}</p>
+    <p>${getal(fr.length)} fragmenten uit ${dag.bronverslagen.length} gepubliceerde versie(s)</p>` : '';
+  return `<div class="dag-kop"><h1>${esc(dag.label)} — ${esc(dag.lang)}</h1>
+    ${versie}
+    <p class="let-op">${streng ? 'Ongecorrigeerde stenogrammen: geen rechten aan te ontlenen, niet letterlijk citeren.' : 'Geen officiële publicatie: citeer uitsluitend uit de Handelingen.'} Definitieve tekst: Handelingen op officielebekendmakingen.nl.</p></div>`;
+}
+
+function blokOpen(soort, id) {
+  const b = S.blok.get(id) || { id, titel: '(onbekend blok)' };
+  const dicht = S.dicht.has(id) ? ' dicht' : '';
+  const sam = (S.samPerBlok.get(id) || []).map(samHtml).join('');
+  if (soort === 'agendapunten') {
+    return `<section class="blok ap${dicht}" data-blok="${esc(id)}">
+      <div class="blok-kop ap-kop"><button class="klap" data-act="klap" aria-label="In- of uitklappen">▾</button><h2>${esc(b.titel)}</h2>
+      <span class="acties"><button data-act="export-blok">⤓ Exporteer agendapunt</button></span>
+      <span class="meta">${esc(b.soort)} · ${hhmm(b.begin)}${b.eind ? '–' + hhmm(b.eind) : ''}${b.voortzetting ? ' · voortzetting' : ''}</span></div>
+      <div class="blok-inhoud">${sam}`;
+  }
+  if (soort === 'termijnen') {
+    return `<section class="blok tm${dicht}" data-blok="${esc(id)}">
+      <div class="blok-kop tm-kop"><button class="klap" data-act="klap" aria-label="In- of uitklappen">▾</button><h3>${esc(b.titel)}</h3>
+      <span class="meta">${hhmm(b.begin)}${b.eind ? '–' + hhmm(b.eind) : ''} · ${duur(b.duur_s)}</span>
+      <span class="acties"><button data-act="export-blok">⤓ Exporteer termijn</button></span></div>
+      <div class="blok-inhoud">${sam}`;
+  }
+  const vz = b.is_voorzitter || b.soort !== 'Spreekbeurt';
+  const nIntr = b.fragmenten ? b.fragmenten.filter(fid => (S.byId.get(fid) || {}).type === 'interruptie').length : 0;
+  const wie = b.categorie === 'fractie' ? b.fractie : b.categorie === 'kabinet' ? (b.spreker && b.spreker.functie) : b.is_voorzitter ? 'voorzitter' : '';
+  return `<div class="blok beurt${vz ? ' vz' : ''}${dicht}" data-blok="${esc(id)}">
+    <div class="blok-kop beurt-kop"><button class="klap" data-act="klap" aria-label="In- of uitklappen">▾</button>
+      <span class="dot" style="--c:${kleurVan(b.groep)}"></span><b>${esc(b.naam || b.titel)}</b> <span class="fr">${esc(wie || '')}</span>
+      <span class="tijden">${tijd(b.begin)}–${tijd(b.eind)} · ${duur(b.duur_s)}</span>
+      ${nIntr ? `<span class="intr">${nIntr} interruptie${nIntr === 1 ? '' : 's'}</span>` : ''}
+      <span class="acties"><button data-act="export-blok">⤓ Exporteer beurt</button></span></div>
+    <div class="blok-inhoud">${sam}`;
+}
+
+function fragHtml(f) {
+  const st = (f.bron.status || '').toLowerCase();
+  const versies = f.versies.map(v => `${v.soort}/${v.status} (${(v.api_gewijzigd_op || '').slice(0, 16).replace('T', ' ')} UTC)`).join(' → ');
+  const gewijzigd = f.wijzigingen.filter(w => w !== 'status');
+  const wie = f.type === 'procedure'
+    ? `<span class="wie"><b>${esc(f.procedure_soort || 'Procedure')}</b></span>`
+    : `<span class="wie"><span class="dot"></span><b>${esc(f.naam || 'Onbekend')}</b><span class="fr">${esc(f.categorie === 'fractie' ? f.fractie : f.categorie === 'kabinet' ? f.functie : f.categorie === 'voorzitter' ? 'voorzitter' : (f.functie || ''))}</span></span>`;
+  return `<article class="frag t-${f.type}" id="${f.id}" style="--c:${kleurVan(f.groep)}">
+    <div class="gutter"><a class="t-begin" href="#${f.id}" title="Permalink naar dit fragment">${tijd(f.begin) || '—'}</a><span class="t-eind">${f.eind ? '– ' + tijd(f.eind) : ''}</span><span class="t-duur">${duur(f.duur_s)}</span></div>
+    <div class="lijf">
+      <header class="frag-kop" data-status="${esc((f.bron.status || 'status onbekend').toUpperCase())}">${wie}
+        ${f.type === 'hoofdtermijn' || f.type === 'interruptie' ? `<span class="type">${f.type}</span>` : ''}
+        <span class="badge st-${esc(st)}" title="Versies: ${esc(versies)}">${esc(f.bron.status)}</span>
+        <span class="badge soort" title="Publicatiesoort van de actuele bron">${esc(f.bron.soort)}</span>
+        ${gewijzigd.length ? `<button class="badge gewijzigd" data-act="eerder" title="Gewijzigd t.o.v. een eerdere versie: ${esc(gewijzigd.join(', '))}">gewijzigd</button>` : ''}
+        <span class="acties"><a class="fid" href="#${f.id}" title="Fragment-ID / permalink">${f.id}</a><button data-act="kopieer" title="Kopieer fragment (met disclaimer)">Kopieer</button><button data-act="menu" aria-label="Meer acties">⋯</button></span>
+      </header>
+      <div class="frag-tekst">${paragrafen(f, null)}</div>
+    </div></article>`;
+}
+
+function paragrafen(f, ranges) {
+  if (!f.alineas.length) return '<p class="leeg">(nog geen tekst in deze versie)</p>';
+  return f.alineas.map((a, pi) => {
+    const start = f._off[pi], eind = start + a.tekst.length;
+    const rs = ranges ? ranges.filter(r => r[1] > start && r[0] < eind).map(r => [Math.max(r[0], start) - start, Math.min(r[1], eind) - start]) : [];
+    const lab = pi === 0 && f.label && a.tekst.startsWith(f.label) ? f.label.length : 0;
+    return `<p class="al${a.soort ? ' al-' + esc(a.soort.replace(/\s+/g, '-')) : ''}">${markeer(a.tekst, rs, lab)}</p>`;
+  }).join('');
+}
+
+function markeer(t, rs, lab) {
+  if (!rs.length && !lab) return esc(t);
+  const punten = new Set([0, t.length]);
+  if (lab) punten.add(lab);
+  for (const [a, b] of rs) { punten.add(a); punten.add(b); }
+  const p = [...punten].sort((a, b) => a - b);
+  let h = '';
+  for (let i = 0; i < p.length - 1; i++) {
+    const a = p[i], b = p[i + 1];
+    let s = esc(t.slice(a, b));
+    if (rs.some(r => r[0] <= a && r[1] >= b)) s = `<mark>${s}</mark>`;
+    if (a < lab) s = `<b class="lbl">${s}</b>`;
+    h += s;
+  }
+  return h;
+}
+
+function samHtml(s) {
+  const blok = s.blok_id && S.blok.get(s.blok_id);
+  const blokAnders = !!blok && JSON.stringify(blok.fragmenten) !== JSON.stringify(s.fragment_ids || []);
+  const tekstAnders = Object.entries(s.bron_hashes || {}).some(([id, hash]) => !S.byId.has(id) || S.byId.get(id).tekst_hash !== hash);
+  const verouderd = blokAnders || tekstAnders;
+  const statussen = Object.entries(s.bron_statussen || {}).map(([k, v]) => `${v}× ${k}`).join(', ');
+  const ids = s.fragment_ids || [];
+  const tekst = esc(s.tekst).replace(/\[(\d{4}-\d{2}-\d{2}-\d{4})\]/g, '[<a href="#$1">$1</a>]').split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  return `<aside class="sam${s.tekst.length > 600 ? ' kort' : ''}" data-sam="${esc(s.id)}">
+    <div class="sam-label">Samenvatting — geen bron</div>
+    <div class="sam-sub">Automatisch gegenereerd${s.model ? ' (' + esc(s.model) + ')' : ''} op ${esc(datumTijd(s.gegenereerd_op))}. Controleer altijd tegen de ruwe tekst${statussen ? '; gebaseerd op ' + esc(statussen) : ''}.
+      ${verouderd ? `<span class="sam-waarschuwing">${blokAnders ? 'Het blok is sindsdien aangevuld of gewijzigd' : 'De brontekst is sindsdien gewijzigd'}; deze samenvatting dekt dat niet.</span>` : ''}</div>
+    <div class="sam-tekst">${tekst}</div>
+    ${s.tekst.length > 600 ? '<button class="sam-meer" data-act="sam-meer">Hele samenvatting tonen</button>' : ''}
+    <div class="sam-sub">Fragmenten ${ids.length ? `<a href="#${ids[0]}">${ids[0]}</a> t/m <a href="#${ids[ids.length - 1]}">${ids[ids.length - 1]}</a>` : '—'}</div>
+  </aside>`;
+}
+
+function renderVolgorde() {
+  const dagen = S.view === 'alle' ? S.data.dagen : S.data.dagen.filter(d => d.datum === S.view);
+  let h = `<div class="fg" style="margin:6px 4px 8px"><h4>Sprekersvolgorde <label class="klein"><input type="checkbox" id="vzToggle" ${S.pref.vz ? 'checked' : ''}> voorzitter</label></h4></div>`;
+  for (const dag of dagen) {
+    if (S.view === 'alle') h += `<div class="vg-dag">${esc(dag.label)} · ${esc(dag.kort)}</div>`;
+    for (const ap of dag.agendapunten) {
+      const beurten = dag.beurten.filter(b => b.agendapunt === ap.id && (S.pref.vz || (!b.is_voorzitter && b.soort === 'Spreekbeurt')));
+      if (!beurten.length) continue;
+      h += `<div class="vg-kop">${esc(ap.titel)}</div>`;
+      let tm = null;
+      for (const b of beurten) {
+        if (b.termijn !== tm) { tm = b.termijn; const t = S.blok.get(tm); if (t) h += `<div class="vg-kop tm">${esc(t.titel)}</div>`; }
+        const wie = b.categorie === 'fractie' ? b.fractie : b.categorie === 'kabinet' ? 'kabinet' : b.is_voorzitter ? 'voorzitter' : '';
+        h += `<button class="vg${b.is_voorzitter ? ' vz' : ''}" data-beurt="${esc(b.id)}" title="${esc((b.spreker && b.spreker.functie) || '')}">
+          <span class="dot" style="--c:${kleurVan(b.groep)}"></span><span class="vg-naam">${esc(b.naam || b.titel)}</span><span class="vg-fr">${esc(wie)}</span>
+          <span class="vg-tijd">${tijd(b.begin)}–${tijd(b.eind)} · ${duur(b.duur_s)}</span></button>`;
+      }
+    }
+  }
+  $('#volgorde').innerHTML = h;
+}
+
+function renderFilterlijsten() {
+  const telType = {}, telGroep = new Map(), telSpreker = new Map();
+  for (const f of S.zicht) {
+    telType[f.type] = (telType[f.type] || 0) + 1;
+    telGroep.set(f.groep, (telGroep.get(f.groep) || 0) + 1);
+    if (f._spk) {
+      const s = telSpreker.get(f._spk) || { naam: f.naam, groep: f.groep, n: 0 };
+      s.n++; telSpreker.set(f._spk, s);
+    }
+  }
+  $('#typelijst').innerHTML = TYPES.map(t => `<label class="rij"><input type="checkbox" data-type="${t}" ${S.f.types.has(t) ? 'checked' : ''}> ${TYPE_LABEL[t]}<span class="n">${getal(telType[t] || 0)}</span></label>`).join('');
+  const volgorde = [...S.data.fracties.map(x => x.groep), ...[...telGroep.keys()].filter(g => !S.groepen.has(g))];
+  $('#fractielijst').innerHTML = volgorde.filter(g => telGroep.has(g) && g !== 'Procedure').map(g =>
+    `<label class="rij"><input type="checkbox" data-groep="${esc(g)}" ${S.f.groepen.has(g) ? 'checked' : ''}><span class="dot" style="--c:${kleurVan(g)}"></span>${esc(g)}<span class="n">${getal(telGroep.get(g))}</span></label>`).join('');
+  const sprekers = [...telSpreker.entries()].sort((a, b) => a[1].naam.localeCompare(b[1].naam, 'nl'));
+  const zoekterm = fold($('#sprekerzoek').value.trim());
+  $('#sprekerlijst').innerHTML = sprekers.map(([id, s]) =>
+    `<label class="rij" data-naam="${esc(fold(s.naam + ' ' + s.groep))}" ${zoekterm && !fold(s.naam + ' ' + s.groep).includes(zoekterm) ? 'hidden' : ''}><input type="checkbox" data-spreker="${esc(id)}" ${S.f.sprekers.has(id) ? 'checked' : ''}><span class="dot" style="--c:${kleurVan(s.groep)}"></span>${esc(s.naam)} <small style="color:var(--ink-3)">${esc(s.groep)}</small><span class="n">${getal(s.n)}</span></label>`).join('');
+}
+
+/* ================================================================ filteren */
+
+function past(f) {
+  const F = S.f;
+  if (!F.types.has(f.type)) return false;
+  if ((F.groepen.size || F.sprekers.size) && !(F.groepen.has(f.groep) || (f._spk && F.sprekers.has(f._spk)))) return false;
+  if (F.van && f._hm && f._hm < F.van) return false;
+  if (F.tot && f._hm && f._hm > F.tot) return false;
+  return true;
+}
+
+function zichtbareFragmenten() {
+  return S.zicht.filter(f => { const el = document.getElementById(f.id); return el && !el.hidden; });
+}
+
+function pasFiltersToe() {
+  const terms = termen(S.f.q);
+  const termSleutel = terms.join('');
+  S.treffers.clear();
+  let hits = 0, zichtbaar = 0, fragHits = 0;
+  for (const f of S.zicht) {
+    let ok = past(f);
+    if (ok && terms.length) {
+      const r = zoek(f, terms);
+      if (r) { S.treffers.set(f._i, r); hits += r.length; fragHits++; } else if (S.f.alleenTreffers) ok = false;
+    }
+    const el = document.getElementById(f.id);
+    if (el && el.hidden === ok) el.hidden = !ok;
+    if (ok) zichtbaar++;
+  }
+  for (const [i, sleutel] of S.gemarkeerd) {
+    if (!S.treffers.has(i) || sleutel !== termSleutel) {
+      const f = S.fr[i], el = document.getElementById(f.id);
+      if (el) $('.frag-tekst', el).innerHTML = paragrafen(f, null);
+      S.gemarkeerd.delete(i);
+    }
+  }
+  for (const [i, r] of S.treffers) {
+    if (S.gemarkeerd.get(i) === termSleutel) continue;
+    const f = S.fr[i], el = document.getElementById(f.id);
+    if (el) $('.frag-tekst', el).innerHTML = paragrafen(f, r);
+    S.gemarkeerd.set(i, termSleutel);
+  }
+  S.hits = null; S.hitIdx = -1;
+  for (const blok of $$('#tekst .blok')) {
+    const heeft = !!blok.querySelector('.frag:not([hidden])');
+    if (blok.hidden === heeft) blok.hidden = !heeft;
+  }
+  const vg = new Set(zichtbareFragmenten().map(f => f.beurt_id));
+  $$('#volgorde .vg').forEach(b => b.classList.toggle('leeg', !vg.has(b.dataset.beurt)));
+
+  $('#teller').textContent = terms.length ? `${getal(hits)} treffer${hits === 1 ? '' : 's'} · ${getal(fragHits)} fr.` : '';
+  $('#resultaat').textContent = `${getal(zichtbaar)} van ${getal(S.zicht.length)} fragmenten`;
+  renderChips();
+}
+
+function renderChips() {
+  const F = S.f, chips = [];
+  const chip = (label, actie, titel = '') => chips.push(`<span class="chip" title="${esc(titel)}">${label}<button data-wis="${esc(actie)}" aria-label="Filter verwijderen">×</button></span>`);
+  if (F.q.trim()) chip(`zoekterm: <b>${esc(F.q.trim())}</b>`, 'q');
+  if (F.types.size !== TYPES.length) {
+    const label = F.types.size === 1 && F.types.has('hoofdtermijn') ? 'alleen hoofdtermijnen' : `soort: ${[...F.types].join(', ') || 'geen'}`;
+    chip(esc(label), 'types');
+  }
+  for (const g of F.groepen) chip(`<span class="dot" style="--c:${kleurVan(g)}"></span> ${esc(g)}`, 'groep:' + g);
+  for (const id of F.sprekers) {
+    const f = S.fr.find(x => x._spk === id);
+    chip(esc(f ? f.naam : id), 'spreker:' + id);
+  }
+  if (F.van || F.tot) chip(`tijdvak ${esc(F.van || '…')}–${esc(F.tot || '…')}`, 'tijd');
+  if (chips.length > 1) chips.push(`<button class="chip wis" data-wis="alles">Wis alle filters</button>`);
+  $('#chips').innerHTML = chips.join('');
+}
+
+function wisFilter(wat) {
+  const F = S.f;
+  if (wat === 'alles') {
+    F.q = ''; F.groepen.clear(); F.sprekers.clear(); F.types = new Set(TYPES); F.van = F.tot = '';
+    $('#q').value = ''; $('#van').value = ''; $('#tot').value = '';
+  } else if (wat === 'q') { F.q = ''; $('#q').value = ''; }
+  else if (wat === 'types') F.types = new Set(TYPES);
+  else if (wat === 'tijd') { F.van = F.tot = ''; $('#van').value = ''; $('#tot').value = ''; }
+  else if (wat.startsWith('groep:')) F.groepen.delete(wat.slice(6));
+  else if (wat.startsWith('spreker:')) F.sprekers.delete(wat.slice(8));
+  renderFilterlijsten();
+  pasFiltersToe();
+}
+
+/* ================================================================ navigatie */
+
+function ankerVoorScroll() {
+  let y = $('#kop').getBoundingClientRect().bottom + 12;
+  const x = $('#tekst').getBoundingClientRect().left + 120;
+  // Plakkende blokkoppen liggen over de tekst; kijk er dan onder.
+  for (let poging = 0; poging < 4; poging++) {
+    const el = document.elementFromPoint(x, y);
+    if (!el) return null;
+    const frag = el.closest('.frag');
+    if (frag) return { id: frag.id, top: frag.getBoundingClientRect().top };
+    const kop = el.closest('.blok-kop, .sam, .dag-kop');
+    y = (kop ? kop.getBoundingClientRect().bottom : y) + 16;
+  }
+  return null;
+}
+
+function herstelAnker(anker) {
+  if (!anker) return;
+  const el = document.getElementById(anker.id);
+  if (!el || el.hidden) return;
+  window.scrollBy(0, el.getBoundingClientRect().top - anker.top);
+}
+
+function gaNaar(id, { geenHash = false } = {}) {
+  const f = S.byId.get(id);
+  if (!f) { toast(`Fragment ${id} bestaat niet in deze dataset.`); return; }
+  if (S.view !== 'alle' && S.view !== f.dag) zetView(f.dag, { stil: true });
+  let el = document.getElementById(id);
+  if (el && el.hidden) {
+    wisFilter('alles');
+    toast(`Filters gewist om fragment ${id} te tonen.`);
+    el = document.getElementById(id);
+  }
+  if (!el) return;
+  for (let b = el.parentElement.closest('.blok'); b; b = b.parentElement.closest('.blok')) {
+    if (b.classList.contains('dicht')) { b.classList.remove('dicht'); S.dicht.delete(b.dataset.blok); }
+  }
+  // content-visibility:auto schat hoogtes; na de eerste sprong kloppen ze pas, dus nog eens corrigeren.
+  el.scrollIntoView({ block: 'start' });
+  requestAnimationFrame(() => requestAnimationFrame(() => el.scrollIntoView({ block: 'start' })));
+  el.classList.remove('flits'); void el.offsetWidth; el.classList.add('flits');
+  if (!geenHash && location.hash.slice(1) !== id) history.pushState(null, '', '#' + id);
+}
+
+function gaNaarBeurt(beurtId) {
+  const b = S.blok.get(beurtId);
+  const blokEl = $(`#tekst .blok[data-blok="${CSS.escape(beurtId)}"]`);
+  if (blokEl && !blokEl.hidden) {
+    const eerste = blokEl.querySelector('.frag:not([hidden])');
+    if (eerste) { gaNaar(eerste.id); return; }
+  }
+  if (b && b.fragmenten.length) gaNaar(b.fragmenten[0]);
+}
+
+function volgendeTreffer(stap) {
+  if (!S.hits) S.hits = $$('#tekst .frag:not([hidden]) mark');
+  if (!S.hits.length) return;
+  if (S.hitIdx >= 0 && S.hits[S.hitIdx]) S.hits[S.hitIdx].classList.remove('actief');
+  S.hitIdx = (S.hitIdx + stap + S.hits.length) % S.hits.length;
+  const m = S.hits[S.hitIdx];
+  m.classList.add('actief');
+  const frag = m.closest('.frag');
+  for (let b = frag.parentElement.closest('.blok'); b; b = b.parentElement.closest('.blok')) {
+    if (b.classList.contains('dicht')) { b.classList.remove('dicht'); S.dicht.delete(b.dataset.blok); }
+  }
+  frag.scrollIntoView({ block: 'start' });
+  requestAnimationFrame(() => requestAnimationFrame(() => m.scrollIntoView({ block: 'center' })));
+  $('#teller').textContent = `${S.hitIdx + 1} / ${getal(S.hits.length)} treffers`;
+}
+
+let scrollGepland = false;
+function volgScroll() {
+  if (scrollGepland) return;
+  scrollGepland = true;
+  requestAnimationFrame(() => {
+    scrollGepland = false;
+    const a = ankerVoorScroll();
+    const f = a && S.byId.get(a.id);
+    if (!f || !f.beurt_id) return;
+    const huidig = $('#volgorde .vg.actief');
+    if (huidig && huidig.dataset.beurt === f.beurt_id) return;
+    if (huidig) huidig.classList.remove('actief');
+    const rij = $(`#volgorde .vg[data-beurt="${CSS.escape(f.beurt_id)}"]`);
+    if (rij) {
+      rij.classList.add('actief');
+      // Zelf de zijbalk scrollen: scrollIntoView zou ook het venster verschuiven terwijl de lezer scrollt.
+      const balk = $('#volgorde');
+      if (balk.offsetParent !== null && !balk.matches(':hover')) {
+        const r = rij.getBoundingClientRect(), bb = balk.getBoundingClientRect();
+        if (r.top < bb.top + 40 || r.bottom > bb.bottom - 40) balk.scrollTop += r.top - bb.top - bb.height / 3;
+      }
+    }
+  });
+}
+
+/* ================================================================ disclaimer bij alles wat de viewer verlaat */
+
+function disclaimerRegels(fragmenten) {
+  const streng = !fragmenten.length || fragmenten.some(f => isStreng(f));
+  return streng
+    ? ['⚠ ONGECORRIGEERD STENOGRAM — Tweede Kamer, Algemene Politieke Beschouwingen.',
+       'Aan ongecorrigeerde verslagen kunnen geen rechten worden ontleend en er mag niet letterlijk uit worden geciteerd.',
+       `De definitieve, citeerbare tekst staat in de Handelingen: ${HANDELINGEN}`]
+    : ['⚠ GEEN OFFICIËLE PUBLICATIE — verslag Tweede Kamer uit het Gegevensmagazijn (status per fragment vermeld).',
+       'Hieraan kunnen geen rechten worden ontleend; citeer niet letterlijk uit deze tekst.',
+       `De definitieve, citeerbare tekst staat in de Handelingen: ${HANDELINGEN}`];
+}
+
+function fragmentKop(f) {
+  return `[${f.id}] ${wieTekst(f)}`;
+}
+function statusRegel(f) {
+  const delen = [];
+  delen.push(`${tijd(f.begin) || '??:??:??'} – ${f.eind ? tijd(f.eind) : 'onbekend'}`);
+  delen.push(f.duur_s != null ? duur(f.duur_s) : 'duur onbekend');
+  delen.push(f.type);
+  delen.push(statusWoord(f));
+  delen.push(f.bron.soort);
+  if (f.wijzigingen.includes('tekst')) delen.push('TEKST GEWIJZIGD t.o.v. eerdere versie');
+  return delen.join(' · ');
+}
+function alineaTekst(f, md) {
+  return f.alineas.map(a => {
+    if (a.soort === 'lijstitem') return '- ' + a.tekst;
+    if (md && (a.soort === 'Motietekst' || a.soort === 'Motieinfo')) return '> ' + a.tekst;
+    if (!md && (a.soort === 'Motietekst' || a.soort === 'Motieinfo')) return '    ' + a.tekst;
+    return a.tekst;
+  }).join('\n\n');
+}
+
+function selectieNaarTekst(sel) {
+  const blokken = [], fragmenten = [];
+  let samenvatting = false;
+  for (let r = 0; r < sel.rangeCount; r++) {
+    const range = sel.getRangeAt(r);
+    let wortel = range.commonAncestorContainer;
+    if (wortel.nodeType !== 1) wortel = wortel.parentElement;
+    const eigen = wortel.closest('.frag, .sam');
+    const kandidaten = eigen ? [eigen] : $$('.frag, .sam', wortel).filter(el => range.intersectsNode(el));
+    for (const el of kandidaten) {
+      if (el.getClientRects().length === 0) continue;
+      const doelen = el.matches('.frag') ? $$('.frag-tekst, .eerder', el) : $$('.sam-tekst', el);
+      let tekst = '', deels = false;
+      for (const doel of doelen) {
+        if (!range.intersectsNode(doel)) continue;
+        const sub = document.createRange();
+        sub.selectNodeContents(doel);
+        if (range.compareBoundaryPoints(Range.START_TO_START, sub) > 0) { sub.setStart(range.startContainer, range.startOffset); deels = true; }
+        if (range.compareBoundaryPoints(Range.END_TO_END, sub) < 0) { sub.setEnd(range.endContainer, range.endOffset); deels = true; }
+        const div = document.createElement('div');
+        div.appendChild(sub.cloneContents());
+        const eerder = doel.matches('.eerder');
+        // In het verschilpaneel is <ins> tekst die pas later is toegevoegd; die hoort niet bij de eerdere versie.
+        if (eerder) $$('ins, h5, .eerder-meta', div).forEach(n => n.remove());
+        const ps = $$('p', div);
+        const stuk = (ps.length ? ps.map(p => p.textContent) : [div.textContent]).map(t => (eerder ? t.replace(/¶/g, '') : t).replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n\n');
+        if (!stuk) continue;
+        if (eerder) {
+          const f = S.byId.get(el.id);
+          const oud = [...f.versies].reverse().find(x => x.tekst_hash !== f.tekst_hash) || {};
+          tekst += `${tekst ? '\n\n' : ''}[EERDERE, VERVANGEN VERSIE VAN DIT FRAGMENT — status ${(oud.status || 'onbekend').toUpperCase()}${oud.soort ? ' · ' + oud.soort : ''}]\n${stuk}`;
+        } else {
+          tekst += (tekst ? '\n\n' : '') + stuk;
+        }
+      }
+      if (!tekst) continue;
+      if (el.matches('.frag')) {
+        const f = S.byId.get(el.id);
+        fragmenten.push(f);
+        blokken.push(`${fragmentKop(f)}\n${statusRegel(f)}${deels ? ' · (deel van fragment)' : ''}\n\n${tekst}`);
+      } else {
+        samenvatting = true;
+        const s = (S.sam.samenvattingen || []).find(x => x.id === el.dataset.sam) || {};
+        const ids = s.fragment_ids || [];
+        blokken.push(`SAMENVATTING — GEEN BRON. Automatisch gegenereerd, kan fouten bevatten; controleer altijd tegen de ruwe tekst${ids.length ? ` (fragmenten ${ids[0]} t/m ${ids[ids.length - 1]})` : ''}.\n\n${tekst}`);
+      }
+    }
+  }
+  if (!blokken.length) blokken.push(sel.toString().trim());
+  const kop = disclaimerRegels(fragmenten);
+  if (samenvatting) kop.push('Delen gemarkeerd als SAMENVATTING zijn automatisch gegenereerd en zijn geen bron.');
+  const voet = fragmenten.length ? `— Terugzoeken in de APB-viewer via #${fragmenten[0].id}${fragmenten.length > 1 ? ` t/m #${fragmenten[fragmenten.length - 1].id}` : ''}` : '— Bron: APB-viewer';
+  return `${kop.join('\n')}\n\n${blokken.join('\n\n———\n\n')}\n\n${voet}\n`;
+}
+
+function fragmentenAlsKlembord(fragmenten) {
+  const blokken = fragmenten.map(f => `${fragmentKop(f)}\n${statusRegel(f)}\n\n${alineaTekst(f, false)}`);
+  return `${disclaimerRegels(fragmenten).join('\n')}\n\n${blokken.join('\n\n———\n\n')}\n\n— Terugzoeken in de APB-viewer via #${fragmenten[0].id}\n`;
+}
+
+async function naarKlembord(tekst, melding) {
+  let gelukt = true;
+  try {
+    await navigator.clipboard.writeText(tekst);
+  } catch (e) {
+    S.klembordWacht = tekst;
+    gelukt = document.execCommand('copy');
+    S.klembordWacht = null;
+  }
+  toast(gelukt ? melding : 'Kopiëren lukte niet in deze browser. Selecteer de tekst en gebruik Cmd+C of Ctrl+C; de waarschuwing gaat dan ook mee.');
+}
+
+document.addEventListener('copy', e => {
+  if (S.klembordWacht !== null) {
+    e.clipboardData.setData('text/plain', S.klembordWacht);
+    e.preventDefault();
+    return;
+  }
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+  const sel = getSelection();
+  if (!sel || sel.isCollapsed) return;
+  // Alleen text/plain: geen HTML-variant op het klembord waarin de waarschuwing zou kunnen ontbreken.
+  e.clipboardData.setData('text/plain', selectieNaarTekst(sel));
+  e.preventDefault();
+  toast('Gekopieerd — met waarschuwing en status per fragment.');
+});
+document.addEventListener('cut', e => {
+  if (e.target instanceof HTMLInputElement) return;
+  e.preventDefault();
+});
+document.addEventListener('dragstart', e => {
+  const sel = getSelection();
+  if (!sel || sel.isCollapsed || e.target instanceof HTMLInputElement) return;
+  if (e.target.nodeType === 1 && e.target.matches('a[href]') && !e.target.closest('.frag-tekst, .sam-tekst')) return;
+  e.dataTransfer.clearData();
+  e.dataTransfer.setData('text/plain', selectieNaarTekst(sel));
+});
+
+/* ================================================================ export */
+
+function exporteer(fragmenten, opt) {
+  if (!fragmenten.length) { toast('Niets te exporteren: geen fragmenten in deze selectie.'); return; }
+  const md = S.pref.formaat === 'md';
+  const tekst = bouwExport(fragmenten, opt, md);
+  const streng = fragmenten.some(f => isStreng(f));
+  const dagen = [...new Set(fragmenten.map(f => f.dag))];
+  const naam = `apb_${dagen.join('_')}_${opt.bestandsdeel}_${streng ? 'ONGECORRIGEERD' : 'gecorrigeerd'}.${md ? 'md' : 'txt'}`.replace(/[^\w.\-]+/g, '-');
+  const blob = new Blob([tekst], { type: md ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = naam;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  toast(`Geëxporteerd: ${naam} (${getal(fragmenten.length)} fragmenten)`);
+}
+
+function filterOmschrijving() {
+  const F = S.f, d = [];
+  if (F.q.trim()) d.push(`zoekterm "${F.q.trim()}"${F.alleenTreffers ? '' : ' (alleen gemarkeerd)'}`);
+  if (F.types.size !== TYPES.length) d.push(`soort: ${[...F.types].join(', ')}`);
+  if (F.groepen.size) d.push(`fracties: ${[...F.groepen].join(', ')}`);
+  if (F.sprekers.size) d.push(`sprekers: ${[...F.sprekers].map(id => (S.fr.find(f => f._spk === id) || {}).naam || id).join(', ')}`);
+  if (F.van || F.tot) d.push(`tijdvak ${F.van || '…'}–${F.tot || '…'}`);
+  return d.join('; ');
+}
+
+function bouwExport(fragmenten, opt, md) {
+  const nu = new Date();
+  const dagen = S.data.dagen.filter(d => fragmenten.some(f => f.dag === d.datum));
+  const streng = fragmenten.some(f => isStreng(f));
+  const tel = {};
+  for (const f of fragmenten) tel[statusWoord(f)] = (tel[statusWoord(f)] || 0) + 1;
+  const bronIds = new Set(fragmenten.map(f => f.bron.verslag_id));
+  const bronnen = dagen.flatMap(d => d.bronverslagen.filter(b => bronIds.has(b.verslag_id)).map(b => ({ ...b, dag: d.datum })));
+  const eerder = dagen.reduce((n, d) => n + d.bronverslagen.filter(b => !bronIds.has(b.verslag_id)).length, 0);
+  const H1 = md ? '# ' : '', B = s => md ? `**${s}**` : s;
+  const lijn = md ? '---' : '='.repeat(72);
+  const L = [];
+
+  L.push(md ? `# Algemene Politieke Beschouwingen — ${opt.omschrijving}` : `ALGEMENE POLITIEKE BESCHOUWINGEN — ${opt.omschrijving.toUpperCase()}`);
+  if (!md) L.push('='.repeat(72));
+  L.push('');
+  L.push(md ? `> ${B(disclaimerRegels(fragmenten)[0])}` : disclaimerRegels(fragmenten)[0]);
+  L.push('');
+  L.push(`${H1}Over dit bestand`);
+  L.push('');
+  L.push(`- ${B('Wat:')} stenografische verslagen (VLOS) van de Tweede Kamer, opgehaald uit het Gegevensmagazijn van de Tweede Kamer en opgedeeld in fragmenten (één bijdrage van één spreker per fragment).`);
+  L.push(`- ${B('Dag(en):')} ${dagen.map(d => `${d.label} — ${d.lang}`).join('; ')}`);
+  L.push(`- ${B('Selectie:')} ${opt.omschrijving}${opt.filters ? ` (filters: ${opt.filters})` : ''} — ${getal(fragmenten.length)} fragmenten`);
+  L.push(`- ${B('Actualiteit:')} laatst gecontroleerd bij de Tweede Kamer ${S.status.gecontroleerd_op || 'onbekend'}; nieuwste verslagversie binnengehaald ${S.data.meta.laatst_opgehaald_op || 'onbekend'}; het verslag loopt op dat moment tot ${dagen.map(d => tijd(d.laatste_markeertijd) || '—').join(' / ')} uur (tijdstip van het laatste fragment; tijdens een vergadering loopt de publicatie achter)`);
+  L.push(`- ${B('Bestand gemaakt:')} ${nu.toLocaleString('nl-NL', { dateStyle: 'long', timeStyle: 'short' })}`);
+  L.push(`- ${B('Status van de fragmenten:')} ${Object.entries(tel).map(([k, v]) => `${getal(v)} ${k}`).join(', ')}`);
+  L.push(`- ${B('Terugzoeken:')} elk fragment heeft een ID tussen vierkante haken, bijvoorbeeld [${fragmenten[0].id}]. Open de APB-viewer (viewer.html of apb-offline.html) met #ID achter de bestandsnaam, bijvoorbeeld viewer.html#${fragmenten[0].id}, om het origineel te zien.`);
+  L.push('');
+  L.push(`${H1}Juridische status — lees dit eerst`);
+  L.push('');
+  if (streng) {
+    L.push('- Dit zijn ONGECORRIGEERDE stenogrammen. De Dienst Verslag en Redactie werkt ze nog bij; tekst, sprekertoewijzing en tijden kunnen nog veranderen.');
+    L.push('- Aan ongecorrigeerde verslagen kunnen geen rechten worden ontleend.');
+    L.push('- Er mag niet letterlijk uit worden geciteerd.');
+  } else {
+    L.push('- Deze fragmenten hebben in het Gegevensmagazijn de status Gecorrigeerd, maar dit bestand is geen officiële publicatie.');
+    L.push('- Hieraan kunnen geen rechten worden ontleend; citeer niet letterlijk uit dit bestand.');
+  }
+  L.push(`- De definitieve, citeerbare tekst staat in de Handelingen op ${HANDELINGEN}`);
+  L.push('- De status staat bij elk afzonderlijk fragment, zodat die ook bij losse passages bekend blijft.');
+  L.push('');
+  L.push(`${H1}Instructie voor het taalmodel`);
+  L.push('');
+  L.push('Je krijgt hieronder verslagtekst van de Tweede Kamer. Houd je bij elk antwoord over deze tekst aan deze regels:');
+  L.push('');
+  L.push('1. Gebruik deze tekst om te zoeken, samen te vatten en te oriënteren — niet als citeerbare bron.');
+  L.push('2. Citeer niet letterlijk. Geef standpunten en uitspraken in eigen woorden weer en zeg erbij dat het om een ongecorrigeerde weergave gaat.');
+  L.push(`3. Verwijs in je antwoord altijd naar het fragment-ID tussen vierkante haken, bijvoorbeeld [${fragmenten[0].id}], bij elke bewering die je op de tekst baseert. Zo kan de gebruiker het origineel terugzoeken. Noem alleen ID's die in dit bestand voorkomen.`);
+  L.push('4. Vermeld de status (bijv. ONGECORRIGEERD) van de fragmenten waarop je je baseert.');
+  L.push(`5. Wijs de gebruiker erop dat de definitieve, citeerbare tekst in de Handelingen op ${HANDELINGEN} staat.`);
+  L.push('6. Staat iets niet in deze fragmenten, zeg dat dan. Vul niet aan uit eigen kennis zonder dat expliciet te melden.');
+  L.push('');
+  L.push(`${H1}Bronverslagen`);
+  L.push('');
+  if (md) {
+    L.push('| Dag | Verslag-ID | Soort | Status | Gepubliceerd (API, UTC) | Opgehaald |');
+    L.push('|---|---|---|---|---|---|');
+    for (const b of bronnen) L.push(`| ${b.dag} | ${b.verslag_id} | ${b.soort} | ${b.status} | ${b.api_gewijzigd_op || ''} | ${b.opgehaald_op || ''} |`);
+  } else {
+    for (const b of bronnen) L.push(`- ${b.dag} · verslag ${b.verslag_id} · ${b.soort} · ${b.status} · gepubliceerd ${b.api_gewijzigd_op || '?'} (UTC) · opgehaald ${b.opgehaald_op || '?'}`);
+  }
+  if (eerder) L.push('', `Daarnaast ${eerder} eerdere versie(s) in het archief; per fragment geldt de nieuwste versie.`);
+  L.push('');
+  L.push(`${H1}Opbouw van elk fragment`);
+  L.push('');
+  L.push('    ## [fragment-ID] Spreker (fractie, functie of "voorzitter")');
+  L.push('    begintijd – eindtijd · duur · soort (hoofdtermijn / interruptie / voorzitter / procedure) · STATUS · publicatiesoort');
+  L.push('');
+  L.push(lijn);
+
+  let dag = null, ap = null, tm = null;
+  for (const f of fragmenten) {
+    if (f.dag !== dag && dagen.length > 1) { const d = dagen.find(x => x.datum === f.dag); L.push('', md ? `# ${d.label} — ${d.lang}` : `${'#'.repeat(72)}\n${d.label.toUpperCase()} — ${d.lang.toUpperCase()}\n${'#'.repeat(72)}`); ap = tm = null; }
+    dag = f.dag;
+    if (f.agendapunt_id !== ap || f.termijn_id !== tm) {
+      ap = f.agendapunt_id; tm = f.termijn_id;
+      const a = S.blok.get(ap), t = tm && S.blok.get(tm);
+      const titel = `${a ? a.titel : 'Agendapunt'}${t ? ' — ' + t.titel : ''}`;
+      L.push('', md ? `# Agendapunt: ${titel}` : `${'-'.repeat(72)}\nAGENDAPUNT: ${titel}\n${'-'.repeat(72)}`);
+    }
+    L.push('');
+    L.push(`## ${fragmentKop(f)}`);
+    L.push(statusRegel(f));
+    L.push('');
+    L.push(alineaTekst(f, md));
+  }
+  L.push('', lijn, '');
+  L.push(`Einde export. ${disclaimerRegels(fragmenten).slice(1).join(' ')}`);
+  return L.join('\n') + '\n';
+}
+
+function exporteerDag(datum) {
+  const d = S.data.dagen.find(x => x.datum === datum);
+  exporteer(S.fr.filter(f => f.dag === datum), { omschrijving: `${d.label} (${d.lang}), hele dag`, bestandsdeel: 'hele-dag' });
+}
+function exporteerSelectie() {
+  const fr = zichtbareFragmenten();
+  const scope = S.view === 'alle' ? 'alle dagen' : S.data.dagen.find(d => d.datum === S.view).label;
+  exporteer(fr, { omschrijving: `selectie uit ${scope}`, filters: filterOmschrijving() || 'geen', bestandsdeel: 'selectie' });
+}
+function exporteerBlok(id) {
+  const b = S.blok.get(id);
+  const fr = b.fragmenten.map(x => S.byId.get(x)).filter(Boolean);
+  const soort = { agendapunten: 'agendapunt', termijnen: 'termijn', beurten: 'beurt' }[b._soort];
+  let omschrijving = `${soort}: ${b.titel}`;
+  if (b._soort === 'beurten') omschrijving = `beurt van ${b.naam}${b.fractie ? ' (' + b.fractie + ')' : ''}, ${tijd(b.begin)}–${tijd(b.eind)}, incl. interrupties`;
+  if (b._soort === 'termijnen') omschrijving = `${S.blok.get(b.agendapunt).titel} — ${b.titel}`;
+  exporteer(fr, { omschrijving, bestandsdeel: `${soort}-${(b.naam || b.titel || '').slice(0, 40)}` });
+}
+function exporteerSpreker(spk, metBeurten) {
+  const voorbeeld = S.fr.find(f => f._spk === spk);
+  const scope = S.view === 'alle' ? S.fr : S.zicht;
+  let fr = scope.filter(f => f._spk === spk);
+  if (metBeurten) {
+    const beurten = new Set(S.data.dagen.flatMap(d => d.beurten).filter(b => b.spreker && b.spreker.objectid === spk).map(b => b.id));
+    fr = scope.filter(f => f._spk === spk || beurten.has(f.beurt_id));
+  }
+  exporteer(fr, {
+    omschrijving: `${voorbeeld.naam}${voorbeeld.fractie ? ' (' + voorbeeld.fractie + ')' : ''}, alle ${metBeurten ? 'beurten incl. interrupties van anderen' : 'eigen bijdragen'}${S.view === 'alle' ? '' : ', ' + S.data.dagen.find(d => d.datum === S.view).label}`,
+    bestandsdeel: `spreker-${voorbeeld.naam}`,
+  });
+}
+
+/* ================================================================ eerdere versie (woorddiff) */
+
+function toonEerder(f, el) {
+  const bestaand = $('.eerder', el);
+  if (bestaand) { bestaand.remove(); return; }
+  const div = document.createElement('div');
+  div.className = 'eerder';
+  const versies = esc(f.versies.map(v => `${v.soort}/${v.status}, begin ${tijd(v.begin)} (${(v.api_gewijzigd_op || '').slice(0, 16).replace('T', ' ')} UTC)`).join(' → '));
+  if (!f.eerdere_alineas) {
+    div.innerHTML = `<h5>Wijzigingen: ${esc(f.wijzigingen.join(', '))}</h5><p>${versies}</p>`;
+  } else {
+    div.innerHTML = `<h5>Verschil met de vorige tekstversie — <del>stond er eerder</del> / <ins>nieuw in huidige versie</ins></h5>` +
+      woordDiff(f.eerdere_alineas.map(a => a.tekst), f.alineas.map(a => a.tekst)) + `<div class="eerder-meta" style="font:12px var(--sans);color:var(--ink-3)">Versies: ${versies}</div>`;
+  }
+  $('.lijf', el).appendChild(div);
+}
+
+const ALINEA = '\u2029';
+function woordDiff(oud, nieuw) {
+  const A = oud.join(ALINEA).split(/(\s+|\u2029)/).filter(Boolean);
+  const B = nieuw.join(ALINEA).split(/(\s+|\u2029)/).filter(Boolean);
+  // Correcties zijn meestal klein en tijdens de vergadering groeit tekst aan het eind:
+  // eerst gemeenschappelijk begin en eind afknippen, dan pas LCS op het middenstuk.
+  let voor = 0;
+  while (voor < A.length && voor < B.length && A[voor] === B[voor]) voor++;
+  let na = 0;
+  while (na < A.length - voor && na < B.length - voor && A[A.length - 1 - na] === B[B.length - 1 - na]) na++;
+  const a = A.slice(voor, A.length - na), b = B.slice(voor, B.length - na);
+  const stukken = A.slice(0, voor).map(t => ['=', t]);
+  if (a.length * b.length > 4_000_000) {
+    a.forEach(t => stukken.push(['-', t]));
+    b.forEach(t => stukken.push(['+', t]));
+  } else {
+    const n = a.length, m = b.length;
+    const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    let i = 0, j = 0;
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { stukken.push(['=', a[i]]); i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) stukken.push(['-', a[i++]]);
+      else stukken.push(['+', b[j++]]);
+    }
+    while (i < n) stukken.push(['-', a[i++]]);
+    while (j < m) stukken.push(['+', b[j++]]);
+  }
+  A.slice(A.length - na).forEach(t => stukken.push(['=', t]));
+  let h = '<p>';
+  for (const [op, t] of stukken) {
+    if (t === ALINEA) { h += op === '=' ? '</p><p>' : `<${op === '-' ? 'del' : 'ins'}> ¶ </${op === '-' ? 'del' : 'ins'}></p><p>`; continue; }
+    h += op === '=' ? esc(t) : `<${op === '-' ? 'del' : 'ins'}>${esc(t)}</${op === '-' ? 'del' : 'ins'}>`;
+  }
+  return h + '</p>';
+}
+
+/* ================================================================ menu, toast, dialoog */
+
+function openMenu(anker, items) {
+  const menu = $('#menu');
+  menu.innerHTML = items.map((it, i) => it === '-' ? '<hr>' : it.kop ? `<div class="menu-kop">${esc(it.kop)}</div>`
+    : `<button role="menuitem" data-i="${i}">${it.html || esc(it.label)}${it.hint ? `<small>${esc(it.hint)}</small>` : ''}</button>`).join('');
+  menu.hidden = false;
+  const r = anker.getBoundingClientRect();
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  menu.style.left = Math.max(8, Math.min(r.right - mw, innerWidth - mw - 8)) + 'px';
+  menu.style.top = (r.bottom + mh + 8 > innerHeight ? Math.max(8, r.top - mh - 4) : r.bottom + 4) + 'px';
+  menu.onclick = e => {
+    const b = e.target.closest('button[data-i]');
+    if (!b) return;
+    sluitMenu();
+    items[+b.dataset.i].actie();
+  };
+  setTimeout(() => menu.querySelector('button') && menu.querySelector('button').focus(), 0);
+}
+function sluitMenu() { $('#menu').hidden = true; }
+
+let toastTimer;
+function toast(tekst) {
+  const t = $('#toast');
+  t.textContent = tekst; t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+}
+
+function toonBronnen() {
+  const m = S.data.meta;
+  const st = S.status || {};
+  let h = `<h3>Actualiteit</h3><p>`;
+  if (st.gecontroleerd_op) h += `Laatst gecontroleerd bij de Tweede Kamer: <b>${esc(klok(st.gecontroleerd_op, true))}</b> (${esc(geleden(st.gecontroleerd_op))}) — ${st.resultaat === 'fout' ? `<b style="color:var(--ongecorr)">mislukt: ${esc(st.fout)}</b>` : 'gelukt'}. Er wordt elke ${esc(st.interval_min)} min gecontroleerd (${esc(st.bron)}).<br>`;
+  h += `Laatste nieuwe verslagversie binnengehaald: ${esc(klok(m.laatst_opgehaald_op, true))}. Data verwerkt: ${esc(klok(m.gegenereerd_op, true))}.<br>`;
+  h += `De Kamer publiceert tijdens de vergadering met vertraging (bij de test: eerste versie ~1¾ uur na aanvang, daarna elke 30–90 min). Per fragment geldt de nieuwste versie waarin het voorkomt; eerdere versies blijven in het archief bewaard.</p>`;
+  if (location.protocol.startsWith('http')) h += `<p><a href="apb-offline.html" download>Download de offline versie</a> — de hele viewer met deze data in één bestand, te openen zonder internet (ververst niet vanzelf).</p>`;
+  for (const d of S.data.dagen) {
+    const actueel = new Set(d.actuele_bronnen.map(b => b.verslag_id));
+    h += `<h3>${esc(d.label)} — ${esc(d.lang)}</h3>`;
+    h += `<p>${d.vergaderingen.map(v => esc(`${v.titel} (aanvang ${tijd(v.aanvangstijd)}${v.sluiting ? ', sluiting ' + tijd(v.sluiting) : ''})`)).join('<br>') || 'Nog geen vergadering gevonden.'}</p>`;
+    h += `<div style="overflow-x:auto"><table class="bronnen"><thead><tr><th>Gepubliceerd (API, UTC)</th><th>Soort</th><th>Status</th><th>Fragmenten</th><th>Opgehaald</th><th>Verslag-ID</th></tr></thead><tbody>`;
+    for (const b of d.bronverslagen) h += `<tr class="${actueel.has(b.verslag_id) ? 'actueel' : ''}"><td>${esc((b.api_gewijzigd_op || '').slice(0, 19).replace('T', ' '))}</td><td>${esc(b.soort)}</td><td>${esc(b.status)}</td><td>${getal(b.fragmenten)}</td><td>${esc((b.opgehaald_op || '').slice(0, 19).replace('T', ' '))}</td><td class="id">${esc(b.verslag_id)}</td></tr>`;
+    h += `</tbody></table></div>`;
+    h += `<p>Status van de getoonde fragmenten: ${Object.entries(d.statussen).map(([k, v]) => `${getal(v)}× ${esc(k)}`).join(', ') || '—'}</p>`;
+  }
+  const verv = S.data.vervallen.length;
+  h += `<h3>Legenda</h3><p><span class="badge st-ongecorrigeerd">Ongecorrigeerd</span> nog niet door de redactie gecorrigeerd · <span class="badge st-gecorrigeerd">Gecorrigeerd</span> · <span class="badge st-gerectificeerd">Gerectificeerd</span> · <span class="badge soort">Tussenpublicatie</span> publicatiesoort · <span class="badge gewijzigd">gewijzigd</span> tekst, spreker of tijd anders dan in een eerdere versie (klik voor de verschillen).</p>
+    <p>${verv ? `${verv} fragment(en) kwamen in een eerdere versie voor maar niet meer in de nieuwste; die worden niet getoond.` : 'Geen vervallen fragmenten.'}</p>
+    <p>Sneltoetsen: <b>/</b> zoeken · <b>Enter</b> / <b>Shift+Enter</b> volgende/vorige treffer · <b>Esc</b> zoekterm wissen.</p>`;
+  $('#bronnenInhoud').innerHTML = h;
+  $('#bronnen').showModal();
+}
+
+/* ================================================================ live bijwerken (alleen via http, lokaal bestand) */
+
+async function controleerUpdate() {
+  try {
+    const r = await fetch('data/apb.json', { cache: 'no-cache' });
+    if (!r.ok) return;
+    const d = await r.json();
+    S.status = await haalStatus() || S.status;
+    bijwerkenDatastatus();
+    if (d.meta.inhoud_hash === S.data.meta.inhoud_hash) return;
+    S.nieuweData = d;
+    const erbij = d.fragmenten.length - S.data.fragmenten.length;
+    const knop = $('#update');
+    knop.textContent = `Nieuwe versie${erbij > 0 ? ` (+${erbij} fragmenten)` : ''} — bijwerken`;
+    knop.hidden = false;
+  } catch (e) { /* server even weg; volgende ronde opnieuw */ }
+}
+
+async function pasUpdateToe() {
+  if (!S.nieuweData) return;
+  const anker = ankerVoorScroll();
+  S.data = S.nieuweData; S.nieuweData = null;
+  S.sam = await haalSamenvattingen() || S.sam;
+  indexeer();
+  bouwTabs();
+  zetView(S.view === 'alle' || S.data.dagen.some(d => d.datum === S.view) ? S.view : 'alle', { stil: true });
+  herstelAnker(anker);
+  $('#update').hidden = true;
+  toast('Bijgewerkt naar de nieuwste verslagversie.');
+}
+
+/* ================================================================ events */
+
+function meetKop() {
+  document.documentElement.style.setProperty('--banner-h', $('#disclaimer').offsetHeight + 'px');
+  document.documentElement.style.setProperty('--kop-h', $('#kop').offsetHeight + 'px');
+}
+new ResizeObserver(meetKop).observe($('#disclaimer'));
+new ResizeObserver(meetKop).observe($('#kop'));
+
+let zoekTimer;
+$('#q').addEventListener('input', e => {
+  clearTimeout(zoekTimer);
+  const waarde = e.target.value;
+  zoekTimer = setTimeout(() => { S.f.q = waarde; pasFiltersToe(); }, termen(waarde).some(t => t.length < 4) ? 180 : 60);
+});
+$('#q').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); clearTimeout(zoekTimer); if (S.f.q !== e.target.value) { S.f.q = e.target.value; pasFiltersToe(); } volgendeTreffer(e.shiftKey ? -1 : 1); }
+  if (e.key === 'Escape') { e.target.value = ''; S.f.q = ''; pasFiltersToe(); }
+});
+$('#volgende').addEventListener('click', () => volgendeTreffer(1));
+$('#vorige').addEventListener('click', () => volgendeTreffer(-1));
+$('#alleenTreffers').addEventListener('change', e => { S.f.alleenTreffers = e.target.checked; pasFiltersToe(); });
+
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-view]'); if (b) zetView(b.dataset.view); });
+
+$('#filters').addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.type) t.checked ? S.f.types.add(t.dataset.type) : S.f.types.delete(t.dataset.type);
+  else if (t.dataset.groep) t.checked ? S.f.groepen.add(t.dataset.groep) : S.f.groepen.delete(t.dataset.groep);
+  else if (t.dataset.spreker) t.checked ? S.f.sprekers.add(t.dataset.spreker) : S.f.sprekers.delete(t.dataset.spreker);
+  else if (t.id === 'van' || t.id === 'tot') S.f[t.id] = t.value;
+  else return;
+  pasFiltersToe();
+});
+$('#filters').addEventListener('click', e => {
+  const b = e.target.closest('[data-snel]');
+  if (!b) return;
+  S.f.types = b.dataset.snel === 'hoofd' ? new Set(['hoofdtermijn']) : new Set(TYPES);
+  renderFilterlijsten(); pasFiltersToe();
+});
+$('#sprekerzoek').addEventListener('input', e => {
+  const q = fold(e.target.value.trim());
+  $$('#sprekerlijst label').forEach(l => { l.hidden = !!q && !l.dataset.naam.includes(q); });
+});
+$('#chips').addEventListener('click', e => { const b = e.target.closest('[data-wis]'); if (b) wisFilter(b.dataset.wis); });
+
+$('#tekst').addEventListener('click', e => {
+  const knop = e.target.closest('[data-act]');
+  if (!knop) return;
+  const act = knop.dataset.act;
+  const blok = knop.closest('.blok');
+  if (act === 'klap') {
+    blok.classList.toggle('dicht');
+    blok.classList.contains('dicht') ? S.dicht.add(blok.dataset.blok) : S.dicht.delete(blok.dataset.blok);
+    return;
+  }
+  if (act === 'export-blok') { exporteerBlok(blok.dataset.blok); return; }
+  if (act === 'sam-meer') {
+    const sam = knop.closest('.sam');
+    sam.classList.toggle('kort');
+    knop.textContent = sam.classList.contains('kort') ? 'Hele samenvatting tonen' : 'Samenvatting inkorten';
+    return;
+  }
+  const el = knop.closest('.frag');
+  const f = el && S.byId.get(el.id);
+  if (!f) return;
+  if (act === 'kopieer') naarKlembord(fragmentenAlsKlembord([f]), `Fragment ${f.id} gekopieerd — met waarschuwing en status.`);
+  if (act === 'eerder') toonEerder(f, el);
+  if (act === 'menu') {
+    const items = [{ label: 'Kopieer link naar dit fragment', hint: f.id, actie: () => naarKlembord(location.href.split('#')[0] + '#' + f.id, 'Link gekopieerd.') }];
+    if (f.beurt_id && S.blok.has(f.beurt_id)) items.push({ label: 'Exporteer deze beurt (incl. interrupties)', actie: () => exporteerBlok(f.beurt_id) });
+    if (f.termijn_id && S.blok.has(f.termijn_id)) items.push({ label: 'Exporteer deze termijn', actie: () => exporteerBlok(f.termijn_id) });
+    if (f._spk) {
+      items.push('-', { kop: f.naam });
+      items.push({ label: `Filter op ${f.naam}`, actie: () => { S.f.sprekers.add(f._spk); renderFilterlijsten(); pasFiltersToe(); gaNaar(f.id); } });
+      items.push({ label: `Exporteer alle bijdragen van ${f.naam}`, actie: () => exporteerSpreker(f._spk, false) });
+      items.push({ label: `Exporteer beurten van ${f.naam} incl. interrupties`, actie: () => exporteerSpreker(f._spk, true) });
+    }
+    if (f.wijzigingen.some(w => w !== 'status')) items.push('-', { label: 'Toon verschil met eerdere versie', actie: () => toonEerder(f, el) });
+    openMenu(knop, items);
+  }
+});
+
+$('#volgorde').addEventListener('click', e => {
+  const rij = e.target.closest('.vg');
+  if (rij) { gaNaarBeurt(rij.dataset.beurt); document.body.classList.remove('toon-volgorde'); }
+});
+$('#volgorde').addEventListener('change', e => {
+  if (e.target.id === 'vzToggle') { S.pref.vz = e.target.checked; bewaarPref(); renderVolgorde(); pasFiltersToe(); }
+});
+$('#volgorde').addEventListener('contextmenu', e => {
+  const rij = e.target.closest('.vg');
+  if (!rij) return;
+  const b = S.blok.get(rij.dataset.beurt);
+  if (!b || !b.spreker) return;
+  e.preventDefault();
+  openMenu(rij, [
+    { kop: b.naam },
+    { label: 'Exporteer deze beurt', actie: () => exporteerBlok(b.id) },
+    { label: `Exporteer alle bijdragen van ${b.naam}`, actie: () => exporteerSpreker(b.spreker.objectid, false) },
+    { label: `Exporteer beurten van ${b.naam} incl. interrupties`, actie: () => exporteerSpreker(b.spreker.objectid, true) },
+    { label: `Filter op ${b.naam}`, actie: () => { S.f.sprekers.add(b.spreker.objectid); renderFilterlijsten(); pasFiltersToe(); } },
+  ]);
+});
+
+$('#exportKnop').addEventListener('click', e => {
+  const n = zichtbareFragmenten().length;
+  const items = [{ kop: 'Hele dag' }];
+  for (const d of S.data.dagen) items.push({ label: `${d.label} — ${d.lang}`, hint: getal(d.aantal_fragmenten), actie: () => exporteerDag(d.datum) });
+  items.push('-', { label: 'Huidige selectie (wat de filters tonen)', hint: getal(n), actie: exporteerSelectie });
+  if (S.f.sprekers.size) {
+    items.push('-', { kop: 'Gekozen sprekers' });
+    for (const spk of S.f.sprekers) {
+      const naam = (S.fr.find(f => f._spk === spk) || {}).naam || spk;
+      items.push({ label: `Alle bijdragen van ${naam}`, actie: () => exporteerSpreker(spk, false) });
+      items.push({ label: `Beurten van ${naam} incl. interrupties`, actie: () => exporteerSpreker(spk, true) });
+    }
+  }
+  items.push('-', { kop: 'Formaat' });
+  items.push({ html: `${S.pref.formaat === 'md' ? '●' : '○'} Markdown (.md)`, actie: () => { S.pref.formaat = 'md'; bewaarPref(); toast('Exportformaat: Markdown'); } });
+  items.push({ html: `${S.pref.formaat === 'txt' ? '●' : '○'} Platte tekst (.txt)`, actie: () => { S.pref.formaat = 'txt'; bewaarPref(); toast('Exportformaat: platte tekst'); } });
+  items.push('-', { kop: 'Eén spreker of blok' }, { label: 'Filter op een spreker, of gebruik ⋯ bij een fragment, rechtsklik in de sprekersvolgorde of ⤓ bij een blok', actie: () => {} });
+  openMenu(e.currentTarget, items);
+});
+$('#weergaveKnop').addEventListener('click', e => {
+  const p = S.pref;
+  openMenu(e.currentTarget, [
+    { kop: 'Tekstgrootte' },
+    ...[16, 18, 20, 22].map(g => ({ html: `${p.grootte === g ? '●' : '○'} ${g}px`, actie: () => { p.grootte = g; bewaarPref(); } })),
+    '-', { kop: 'Thema' },
+    ...[['auto', 'Systeem'], ['licht', 'Licht'], ['donker', 'Donker']].map(([k, l]) => ({ html: `${p.thema === k ? '●' : '○'} ${l}`, actie: () => { p.thema = k; bewaarPref(); } })),
+    '-',
+    { html: `${p.sam ? '☑' : '☐'} Samenvattingen tonen`, actie: () => { p.sam = !p.sam; bewaarPref(); } },
+    { label: 'Alles inklappen', actie: () => $$('#tekst .blok.ap, #tekst .blok.tm').forEach(b => { b.classList.add('dicht'); S.dicht.add(b.dataset.blok); }) },
+    { label: 'Alles uitklappen', actie: () => { $$('#tekst .blok.dicht').forEach(b => b.classList.remove('dicht')); S.dicht.clear(); } },
+  ]);
+});
+$('#bronKnop').addEventListener('click', toonBronnen);
+$('#datastatus').addEventListener('click', toonBronnen);
+$('#bronnen').addEventListener('click', e => { if (e.target.matches('[data-sluit]') || e.target === e.currentTarget) e.currentTarget.close(); });
+$('#update').addEventListener('click', pasUpdateToe);
+$('#filterToggle').addEventListener('click', () => document.body.classList.toggle('toon-filters'));
+$('#volgordeToggle').addEventListener('click', () => document.body.classList.toggle('toon-volgorde'));
+
+document.addEventListener('click', e => { if (!$('#menu').hidden && !e.target.closest('#menu, [aria-haspopup], [data-act="menu"]')) sluitMenu(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') sluitMenu();
+  if (e.key === '/' && !(e.target instanceof HTMLInputElement) && !e.metaKey && !e.ctrlKey) { e.preventDefault(); $('#q').focus(); $('#q').select(); }
+});
+window.addEventListener('hashchange', () => { const id = decodeURIComponent(location.hash.slice(1)); if (S.byId.has(id)) gaNaar(id, { geenHash: true }); });
+window.addEventListener('scroll', volgScroll, { passive: true });
+
+laad();
+</script>
+</body>
+</html>

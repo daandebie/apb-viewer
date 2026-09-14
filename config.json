@@ -1,0 +1,6 @@
+{
+  "dagen": ["2026-09-16", "2026-09-17"],
+  "poll_interval_s": 60,
+  "api_basis": "https://gegevensmagazijn.tweedekamer.nl/OData/v4/2.0/",
+  "user_agent": "apb-viewer/1.0 (leesarchief Algemene Politieke Beschouwingen; Python-urllib; max 1 request tegelijk)"
+}

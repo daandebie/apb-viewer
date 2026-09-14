@@ -1,0 +1,617 @@
+{
+ "beschrijving": "Fetch-log van ongewijzigd gearchiveerde VLOS-verslagen. Alleen aanvullen, nooit regels wijzigen.",
+ "fetches": [
+  {
+   "bestand": "2026-06-03_5bc8b458-32b8-43aa-8e8a-58108b4bd043_2026-06-03T10-02-50.3807324Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:16+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "5bc8b458-32b8-43aa-8e8a-58108b4bd043",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 34493,
+    "GewijzigdOp": "2026-06-03T12:02:25.6959429+02:00",
+    "ApiGewijzigdOp": "2026-06-03T10:02:50.3807324Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "34493"
+   },
+   "bytes": 34493,
+   "sha256": "7881c6cc6e12588f4173e1020e736cb46acb084d68c4cc6e1158c189a6482daa",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_05f50013-eff8-4f3f-8865-f61a9e6e5274_2026-06-03T10-52-32.2498022Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:17+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "05f50013-eff8-4f3f-8865-f61a9e6e5274",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 175643,
+    "GewijzigdOp": "2026-06-03T12:52:05.5021887+02:00",
+    "ApiGewijzigdOp": "2026-06-03T10:52:32.2498022Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "175643"
+   },
+   "bytes": 175643,
+   "sha256": "f9ffc820baf5b93305721199ab75f16125d09f9d4ce0326d23c931dc097495ee",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_7fba3edf-4299-4a4a-8021-e5451d18c633_2026-06-03T12-23-34.2466871Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:18+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "7fba3edf-4299-4a4a-8021-e5451d18c633",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 343928,
+    "GewijzigdOp": "2026-06-03T14:22:54.0911957+02:00",
+    "ApiGewijzigdOp": "2026-06-03T12:23:34.2466871Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "343928"
+   },
+   "bytes": 343928,
+   "sha256": "e5b846734dd608d063b5d7ca22f881cba28a4bf55a0e39eceabdbf9861473b88",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_e08e6bc6-7628-435f-b2c1-1265e0ee42f2_2026-06-03T14-01-49.5579697Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:20+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "e08e6bc6-7628-435f-b2c1-1265e0ee42f2",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 487765,
+    "GewijzigdOp": "2026-06-03T16:00:04.7029788+02:00",
+    "ApiGewijzigdOp": "2026-06-03T14:01:49.5579697Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "487765"
+   },
+   "bytes": 487765,
+   "sha256": "254e869b691874f093d37719b9051bcce11154ea02213f2014bf6e1cb0d78054",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_c80e6220-604f-4d13-b4b1-0d4a2714fdf8_2026-06-03T14-32-16.2549758Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:21+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "c80e6220-604f-4d13-b4b1-0d4a2714fdf8",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 580787,
+    "GewijzigdOp": "2026-06-03T16:31:23.9546807+02:00",
+    "ApiGewijzigdOp": "2026-06-03T14:32:16.2549758Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "580787"
+   },
+   "bytes": 580787,
+   "sha256": "a5a5591d863263ce8fbe7ef7e9125172fe618ebd905ebc81e439082dcaf2b3c9",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_bd06bd9c-7699-451a-9f9d-df3df8dabaa9_2026-06-03T15-16-58.5351513Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:22+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "bd06bd9c-7699-451a-9f9d-df3df8dabaa9",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 633362,
+    "GewijzigdOp": "2026-06-03T17:16:00.3058177+02:00",
+    "ApiGewijzigdOp": "2026-06-03T15:16:58.5351513Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "633362"
+   },
+   "bytes": 633362,
+   "sha256": "b2a958998333f429fcc1e54afd6dec819e730ef6b2fba1ca317bdac2b0ef79bc",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_7f0a5b7e-4dbd-4206-9c44-0c679a03a721_2026-06-03T18-27-00.5195274Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:23+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "7f0a5b7e-4dbd-4206-9c44-0c679a03a721",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1091847,
+    "GewijzigdOp": "2026-06-03T20:25:06.6386197+02:00",
+    "ApiGewijzigdOp": "2026-06-03T18:27:00.5195274Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1091847"
+   },
+   "bytes": 1091847,
+   "sha256": "d2f018d60346d5846ba3b60c778ff43f037686d622979d4a00d0d8601badd215",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_aa574e2b-dc3b-48f4-b5d5-6d53a0da5bab_2026-06-03T19-46-26.286681Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:24+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "aa574e2b-dc3b-48f4-b5d5-6d53a0da5bab",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1292279,
+    "GewijzigdOp": "2026-06-03T21:44:44.5540935+02:00",
+    "ApiGewijzigdOp": "2026-06-03T19:46:26.286681Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1292279"
+   },
+   "bytes": 1292279,
+   "sha256": "7c494015dbb6358b17832b55edaf9216e260fa548732dc8191ff8ef305aef52d",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_29d67ea5-a9e5-40d7-b88b-53f9bce76f07_2026-06-03T21-09-19.4560425Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:25+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "29d67ea5-a9e5-40d7-b88b-53f9bce76f07",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1484380,
+    "GewijzigdOp": "2026-06-03T23:08:00.6089747+02:00",
+    "ApiGewijzigdOp": "2026-06-03T21:09:19.4560425Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1484380"
+   },
+   "bytes": 1484380,
+   "sha256": "12fd0cffad5ada77e2d57d64d3f5d5b76be07d848529f5e6b10ccc844ac6fee4",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_0dc1a782-c3e0-440d-9a52-ec74fdc3ea95_2026-06-03T23-07-24.0478779Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:26+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "0dc1a782-c3e0-440d-9a52-ec74fdc3ea95",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1905145,
+    "GewijzigdOp": "2026-06-04T00:59:56.9270881+02:00",
+    "ApiGewijzigdOp": "2026-06-03T23:07:24.0478779Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1905145"
+   },
+   "bytes": 1905145,
+   "sha256": "e15d19780122b805470b1c9355edc0d2df0f40d3a57f9b59d5ecf166ff826563",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_7e13e2dd-a0ad-4af0-9683-169c31001486_2026-06-04T09-30-16.0279559Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:27+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "7e13e2dd-a0ad-4af0-9683-169c31001486",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1904970,
+    "GewijzigdOp": "2026-06-04T11:22:11.2398698+02:00",
+    "ApiGewijzigdOp": "2026-06-04T09:30:16.0279559Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1904970"
+   },
+   "bytes": 1904970,
+   "sha256": "260970f98cb9d39cb9cf2b5a5feff2881f254f1dd327fa92d3adb374586cd30a",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-03_8f8f9a1b-d010-4e23-9d6c-e82d4abbcea1_2026-07-31T10-17-33.6508681Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:28+02:00",
+   "datum": "2026-06-03",
+   "vergadering": {
+    "Id": "ce11e853-32ee-43d3-b05c-697fe48325dc",
+    "Soort": "Plenair",
+    "Titel": "77e vergadering, woensdag 3 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 77,
+    "Datum": "2026-06-03T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-03T10:15:00+02:00",
+    "Sluiting": "2026-06-03T23:45:15+02:00",
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:35.8280122Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "8f8f9a1b-d010-4e23-9d6c-e82d4abbcea1",
+    "Soort": "Eindpublicatie",
+    "Status": "Gecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1924071,
+    "GewijzigdOp": "2026-07-31T11:53:24.391886+02:00",
+    "ApiGewijzigdOp": "2026-07-31T10:17:33.6508681Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ce11e853-32ee-43d3-b05c-697fe48325dc"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1924071"
+   },
+   "bytes": 1924071,
+   "sha256": "3ae5c4eb8470e7d703b624c8d7e1dcacaeaf1a6c093891cdbe8f91841672bb41",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-04_d9a2e3c7-3206-4cd0-bea4-0dbb8f7e7679_2026-06-04T12-31-11.0664822Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:30+02:00",
+   "datum": "2026-06-04",
+   "vergadering": {
+    "Id": "51f427e0-ef20-496d-8f38-91045c4f8e38",
+    "Soort": "Plenair",
+    "Titel": "78e vergadering, donderdag 4 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 78,
+    "Datum": "2026-06-04T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-04T10:15:00+02:00",
+    "Sluiting": "2026-06-04T17:03:07+02:00",
+    "GewijzigdOp": "2026-07-31T15:50:12.3236655+02:00",
+    "ApiGewijzigdOp": "2026-07-31T15:06:54.5331483Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "d9a2e3c7-3206-4cd0-bea4-0dbb8f7e7679",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 312620,
+    "GewijzigdOp": "2026-06-04T14:29:39.2855051+02:00",
+    "ApiGewijzigdOp": "2026-06-04T12:31:11.0664822Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "51f427e0-ef20-496d-8f38-91045c4f8e38"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "312620"
+   },
+   "bytes": 312620,
+   "sha256": "7c25431cfb4e2ce42bc2d3bc58a57541c5c7b83a03e0646eb791545bef2da625",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-04_3fa5cc3c-699b-4963-a13b-f11dca5d3631_2026-06-04T13-49-30.5541735Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:31+02:00",
+   "datum": "2026-06-04",
+   "vergadering": {
+    "Id": "51f427e0-ef20-496d-8f38-91045c4f8e38",
+    "Soort": "Plenair",
+    "Titel": "78e vergadering, donderdag 4 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 78,
+    "Datum": "2026-06-04T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-04T10:15:00+02:00",
+    "Sluiting": "2026-06-04T17:03:07+02:00",
+    "GewijzigdOp": "2026-07-31T15:50:12.3236655+02:00",
+    "ApiGewijzigdOp": "2026-07-31T15:06:54.5331483Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "3fa5cc3c-699b-4963-a13b-f11dca5d3631",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 356207,
+    "GewijzigdOp": "2026-06-04T15:44:13.0507673+02:00",
+    "ApiGewijzigdOp": "2026-06-04T13:49:30.5541735Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "51f427e0-ef20-496d-8f38-91045c4f8e38"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "356207"
+   },
+   "bytes": 356207,
+   "sha256": "a9c466ab24df2de0f2aeb19e93013ff5c91555c315cf916a382018523b93bba4",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-04_1bf9236f-7bd9-45b6-be85-d0039395f42a_2026-06-04T18-23-27.8460333Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:32+02:00",
+   "datum": "2026-06-04",
+   "vergadering": {
+    "Id": "51f427e0-ef20-496d-8f38-91045c4f8e38",
+    "Soort": "Plenair",
+    "Titel": "78e vergadering, donderdag 4 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 78,
+    "Datum": "2026-06-04T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-04T10:15:00+02:00",
+    "Sluiting": "2026-06-04T17:03:07+02:00",
+    "GewijzigdOp": "2026-07-31T15:50:12.3236655+02:00",
+    "ApiGewijzigdOp": "2026-07-31T15:06:54.5331483Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "1bf9236f-7bd9-45b6-be85-d0039395f42a",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 937106,
+    "GewijzigdOp": "2026-06-04T20:18:45.0035814+02:00",
+    "ApiGewijzigdOp": "2026-06-04T18:23:27.8460333Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "51f427e0-ef20-496d-8f38-91045c4f8e38"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "937106"
+   },
+   "bytes": 937106,
+   "sha256": "80a37e9528a038c072569fdeae73918428911f887644f58bf2f31723434e3aad",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-04_d5f4fddd-ac95-4d8d-b3da-34e8763cfb9b_2026-06-04T18-43-17.8935082Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:33+02:00",
+   "datum": "2026-06-04",
+   "vergadering": {
+    "Id": "51f427e0-ef20-496d-8f38-91045c4f8e38",
+    "Soort": "Plenair",
+    "Titel": "78e vergadering, donderdag 4 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 78,
+    "Datum": "2026-06-04T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-04T10:15:00+02:00",
+    "Sluiting": "2026-06-04T17:03:07+02:00",
+    "GewijzigdOp": "2026-07-31T15:50:12.3236655+02:00",
+    "ApiGewijzigdOp": "2026-07-31T15:06:54.5331483Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "d5f4fddd-ac95-4d8d-b3da-34e8763cfb9b",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 937138,
+    "GewijzigdOp": "2026-06-04T20:37:56.4468127+02:00",
+    "ApiGewijzigdOp": "2026-06-04T18:43:17.8935082Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "51f427e0-ef20-496d-8f38-91045c4f8e38"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "937138"
+   },
+   "bytes": 937138,
+   "sha256": "b3799e039348d1c4d4f2df8fd78817521fc432328a8f562033466d8044f2046f",
+   "xml_ok": true
+  },
+  {
+   "bestand": "2026-06-04_4807aa73-3938-4c37-90da-8c1891e39169_2026-07-31T15-06-54.4882327Z.xml",
+   "opgehaald_op": "2026-09-14T09:39:34+02:00",
+   "datum": "2026-06-04",
+   "vergadering": {
+    "Id": "51f427e0-ef20-496d-8f38-91045c4f8e38",
+    "Soort": "Plenair",
+    "Titel": "78e vergadering, donderdag 4 juni 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 78,
+    "Datum": "2026-06-04T00:00:00+02:00",
+    "Aanvangstijd": "2026-06-04T10:15:00+02:00",
+    "Sluiting": "2026-06-04T17:03:07+02:00",
+    "GewijzigdOp": "2026-07-31T15:50:12.3236655+02:00",
+    "ApiGewijzigdOp": "2026-07-31T15:06:54.5331483Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "4807aa73-3938-4c37-90da-8c1891e39169",
+    "Soort": "Eindpublicatie",
+    "Status": "Gecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 942077,
+    "GewijzigdOp": "2026-07-31T15:50:12.3236655+02:00",
+    "ApiGewijzigdOp": "2026-07-31T15:06:54.4882327Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "51f427e0-ef20-496d-8f38-91045c4f8e38"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "942077"
+   },
+   "bytes": 942077,
+   "sha256": "26cba13045cae6b3012fdab46a8c6e4eca4b6310dac90a0d0a794aa316110c12",
+   "xml_ok": true
+  }
+ ]
+}

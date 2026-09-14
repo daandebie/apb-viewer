@@ -1,0 +1,10 @@
+# Afgeleid: wordt bij elke run opnieuw gemaakt uit raw/
+data/apb.json
+data/ophaalstatus.json
+apb-offline.html
+_site/
+fetcher.log
+*.tmp
+*.part
+__pycache__/
+.DS_Store

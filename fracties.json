@@ -1,0 +1,30 @@
+{
+  "_toelichting": "Canonieke fractienamen = Afkorting in het Gegevensmagazijn (entiteit Fractie, stand 14-09-2026). 'aliassen' vangen spellingvarianten op; de originele string uit de XML blijft altijd bewaard. Kleuren zijn een leeshulp, geen huisstijl: de naam staat er altijd naast.",
+  "fracties": [
+    { "afkorting": "D66", "naam": "Democraten 66", "kleur": "#0f9d58", "aliassen": ["Democraten 66"] },
+    { "afkorting": "VVD", "naam": "Volkspartij voor Vrijheid en Democratie", "kleur": "#1d4ed8", "aliassen": [] },
+    { "afkorting": "PRO", "naam": "Progressief Nederland", "kleur": "#be185d", "aliassen": ["Progressief Nederland"] },
+    { "afkorting": "GroenLinks-PvdA", "naam": "GroenLinks-PvdA", "kleur": "#b91c1c", "aliassen": ["GL-PvdA", "GL/PvdA", "GroenLinks/PvdA", "GroenLinks–PvdA"] },
+    { "afkorting": "PVV", "naam": "Partij voor de Vrijheid", "kleur": "#334e7a", "aliassen": ["Partij voor de Vrijheid"] },
+    { "afkorting": "CDA", "naam": "Christen-Democratisch Appèl", "kleur": "#0f766e", "aliassen": [] },
+    { "afkorting": "JA21", "naam": "JA21", "kleur": "#0369a1", "aliassen": ["JA 21"] },
+    { "afkorting": "Groep Markuszower", "naam": "Groep Markuszower", "kleur": "#a16207", "aliassen": ["Markuszower"] },
+    { "afkorting": "FVD", "naam": "Forum voor Democratie", "kleur": "#7f1d1d", "aliassen": ["FvD", "Forum voor Democratie"] },
+    { "afkorting": "ChristenUnie", "naam": "ChristenUnie", "kleur": "#4f46e5", "aliassen": ["CU", "Christen Unie"] },
+    { "afkorting": "SP", "naam": "Socialistische Partij", "kleur": "#dc2626", "aliassen": [] },
+    { "afkorting": "PvdD", "naam": "Partij voor de Dieren", "kleur": "#166534", "aliassen": ["PVDD", "Partij voor de Dieren"] },
+    { "afkorting": "SGP", "naam": "Staatkundig Gereformeerde Partij", "kleur": "#c2410c", "aliassen": [] },
+    { "afkorting": "BBB", "naam": "BoerBurgerBeweging", "kleur": "#65a30d", "aliassen": ["BoerBurgerBeweging"] },
+    { "afkorting": "DENK", "naam": "DENK", "kleur": "#0891b2", "aliassen": ["Denk"] },
+    { "afkorting": "50PLUS", "naam": "50PLUS", "kleur": "#9333ea", "aliassen": ["50Plus", "50 PLUS"] },
+    { "afkorting": "Volt", "naam": "Volt", "kleur": "#6b21a8", "aliassen": ["VOLT"] },
+    { "afkorting": "Lid Keijzer", "naam": "Lid Keijzer", "kleur": "#78716c", "aliassen": [] },
+    { "afkorting": "NSC", "naam": "Nieuw Sociaal Contract", "kleur": "#475569", "aliassen": ["Nieuw Sociaal Contract"] }
+  ],
+  "categorieën": {
+    "Voorzitter": { "kleur": "#44403c" },
+    "Kabinet": { "kleur": "#92400e" },
+    "Overig": { "kleur": "#6b7280" },
+    "Procedure": { "kleur": "#9ca3af" }
+  }
+}

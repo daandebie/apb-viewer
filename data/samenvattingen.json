@@ -1,0 +1,33 @@
+{
+ "meta": {
+  "schema_versie": 1,
+  "bijgewerkt_op": "2026-09-14T10:12:40+02:00",
+  "waarschuwing": "Automatisch gegenereerde samenvattingen. Geen bron; controleer altijd tegen de ruwe tekst in data/apb.json."
+ },
+ "samenvattingen": [
+  {
+   "id": "beurt:322a6514-170d-476b-bdaf-cd23ce2fe01d",
+   "scope": "beurt",
+   "blok_id": "322a6514-170d-476b-bdaf-cd23ce2fe01d",
+   "dag": "2026-06-04",
+   "titel": "Dassen (Volt) — Ultimatum van de vakbeweging inzake de bezuinigingen op de sociale zekerheid, Termijn inbreng, 10:54–10:59",
+   "fragment_ids": [
+    "2026-06-04-0072",
+    "2026-06-04-0073"
+   ],
+   "bron_hashes": {
+    "2026-06-04-0072": "c42e73feaee9",
+    "2026-06-04-0073": "597da3c9a660"
+   },
+   "bron_statussen": {
+    "Ongecorrigeerd / Tussenpublicatie": 2
+   },
+   "tekst": "De heer Dassen (Volt) spreekt in de eerste termijn over de bezuinigingen op de sociale zekerheid en deelt zijn inbreng op in drie debatten [2026-06-04-0072].\n\n- Volgens Dassen heeft het kabinet zich in de eerste 100 dagen in de problemen gebracht door een fout in de formatie. Een minderheidskabinet had met de oppositie moeten afspreken hoe het samenwerkt. Dat leidde tot onrust in de polder en minder vertrouwen in de politiek [2026-06-04-0072].\n- Eerste debat: het kabinet begon volgens hem bij een dekkingsopgave en zocht die bij WW, WIA en AOW. Daarop keerden vakbonden en werkgevers zich af en liep het overleg in de polder vast [2026-06-04-0072].\n- Hij vraagt of de minister-president erkent dat de volgorde verkeerd was. Ook vraagt hij of er ruimte is om de dekking elders te halen, zoals bij vermogen of winst. De minister van Financiën en VVD-leider Brekelmans houden vast aan dekking binnen de SZW-begroting [2026-06-04-0072].\n- In de ongecorrigeerde tekst wordt het bedrag zowel 6,5 als 6,8 miljard genoemd. Welk bedrag bedoeld is, blijkt niet [2026-06-04-0072].\n- Hij verwijst naar CPB-cijfers over vermogensongelijkheid en vraagt waarom D66 en CDA de VVD volgen [2026-06-04-0072].\n- Op basis van de Algemene Rekenkamer noemt hij gemiste belastinginkomsten door capaciteitstekort: 5,2 miljard bij het mkb, 16,5 miljard in totaal. Een investering van 1.000 fte zou veel opleveren. Hij vraagt of het kabinet de aanbevelingen opvolgt en de Belastingdienst versterkt [2026-06-04-0072].\n- Tweede debat: modernisering, die Volt ook wil, moet beginnen bij de vraag welk stelsel in 2040 gewenst is. Hij noemt de veranderende arbeidsmarkt, mantelzorgers, flexwerkers, zware beroepen, jongeren in de WIA, preventie en handhaving, en de gevolgen van automatisering voor premie-inkomsten. Dit zet hij af tegen de houdbaarheidsraming tot 2060 [2026-06-04-0072].\n- Derde debat: het kabinet gedraagt zich volgens hem nog als meerderheidskabinet. Met verwijzing naar Noorwegen en Denemarken vraagt hij de minister-president om breed overleg naar Deens model. Daar sluiten coalitie en oppositie meerjarige akkoorden per beleidsterrein (forlig), gericht op een duurzaam sociaal akkoord [2026-06-04-0072].\n- De beurt bevat geen interrupties of moties. Daarna krijgt de heer Struijs (50PLUS) het woord [2026-06-04-0073].",
+   "model": "claude-opus-5 via Claude Code",
+   "backend": "claude-code",
+   "prompt_versie": 1,
+   "gegenereerd_op": "2026-09-14T10:12:40+02:00",
+   "label": "Automatisch gegenereerde samenvatting — geen bron. Controleer altijd tegen de ruwe tekst."
+  }
+ ]
+}

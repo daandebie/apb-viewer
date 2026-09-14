@@ -1,0 +1,91 @@
+name: APB bijwerken
+
+on:
+  schedule:
+    # UTC. Tijdens de APB (16–17 sep) en de nacht erna elke 10 minuten; daarna dagelijks
+    # voor late tussenversies en de gecorrigeerde Eindpublicatie.
+    - cron: "*/10 * 16-18 9 *"
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+# Nooit twee runs tegelijk: beide zouden raw/ willen aanvullen.
+concurrency:
+  group: apb-bijwerken
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  bijwerken:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      APB_BRON: GitHub Actions
+      APB_INTERVAL_MIN: "10"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verslagen ophalen
+        # Een storing bij de Kamer mag de publicatie niet tegenhouden; de viewer toont de fout.
+        continue-on-error: true
+        run: python fetcher.py
+
+      - name: Nieuwe verslagversies archiveren
+        run: |
+          git add raw
+          if git diff --cached --quiet; then
+            echo "Geen nieuwe verslagversies."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Archief: nieuwe verslagversies $(TZ=Europe/Amsterdam date '+%Y-%m-%d %H:%M')"
+          for poging in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep 10
+          done
+          exit 1
+
+      - name: Verwerken
+        run: python parse.py --demo-url demo/
+
+      - name: Demo met testdata
+        run: >
+          python parse.py --dag 2026-06-03 --dag 2026-06-04 --peilmoment 2026-06-04T14:00:00Z
+          --uitvoer _site/demo
+          --notitie "Demo met testdata: de plenaire vergaderingen van 3 en 4 juni 2026, zoals ze op 4 juni om 16:00 zichtbaar waren. De verslagen van de Algemene Politieke Beschouwingen staan op de hoofdpagina."
+
+      - name: Site samenstellen
+        run: |
+          mkdir -p _site/data
+          cp viewer.html _site/index.html
+          cp viewer.html _site/demo/index.html
+          cp data/apb.json _site/data/
+          cp apb-offline.html _site/
+          if [ -f data/ophaalstatus.json ]; then cp data/ophaalstatus.json _site/data/; fi
+          if [ -f data/samenvattingen.json ]; then cp data/samenvattingen.json _site/data/ _site/demo/data/; fi
+          printf 'User-agent: *\nDisallow: /\n' > _site/robots.txt
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  publiceren:
+    needs: bijwerken
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
