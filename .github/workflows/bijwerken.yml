@@ -28,9 +28,9 @@ jobs:
       APB_BRON: GitHub Actions
       APB_INTERVAL_MIN: "10"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -72,11 +72,14 @@ jobs:
           cp data/apb.json _site/data/
           cp apb-offline.html _site/
           if [ -f data/ophaalstatus.json ]; then cp data/ophaalstatus.json _site/data/; fi
-          if [ -f data/samenvattingen.json ]; then cp data/samenvattingen.json _site/data/ _site/demo/data/; fi
+          if [ -f data/samenvattingen.json ]; then
+            cp data/samenvattingen.json _site/data/
+            cp data/samenvattingen.json _site/demo/data/
+          fi
           printf 'User-agent: *\nDisallow: /\n' > _site/robots.txt
           touch _site/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -88,4 +91,4 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
