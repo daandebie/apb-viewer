@@ -109,6 +109,27 @@ Verder: hele dag, huidige selectie, of via een blok (⤓) / fragment (⋯) / spr
 
 De kop instrueert het model om niet letterlijk te citeren en altijd naar het fragment-ID te verwijzen; met dat ID vind je het origineel terug in de viewer (online: volledige link naar de viewer).
 
+## Google Docs voor Gemini (gebouwd, staat uit)
+
+Gemini opent geen webadressen, maar leest wel Google Docs uit Drive ("auto-synced after import", nog niet bewezen — zie de test met de controlecode). `docs_sync.py` schrijft de dagtekst in bestaande Docs; de workflow doet dat alleen als de repo-variabele `APB_DOCS_SYNC` op `aan` staat.
+
+```bash
+python3 docs_sync.py --map docs-map.json --droog          # wat zou er gebeuren
+python3 docs_sync.py --map docs-map.json --uit /tmp/docs  # de teksten als bestand, om te lezen
+```
+
+Aanzetten, in deze volgorde:
+
+1. **Docs laten aanmaken** door de eigenaar (de partner): per dag twee lege Docs, want een Doc houdt op rond 1,02 miljoen tekens en een dag uit de juni-test was al 808.000. Een serviceaccount heeft geen opslagruimte en kan zelf geen Doc maken.
+2. **Serviceaccount**: in Google Cloud een project, de Docs API aan, een serviceaccount met een JSON-sleutel. Deel elk Doc als **bewerker** met het e-mailadres van dat serviceaccount.
+3. **In GitHub** (Settings → Secrets and variables → Actions):
+   - secret `GOOGLE_SERVICE_ACCOUNT_JSON`: de inhoud van het sleutelbestand;
+   - secret `APB_DOCS`: `{"2026-09-16": ["<doc-id>", "<doc-id>"], "2026-09-17": ["<doc-id>", "<doc-id>"]}` — een secret, want met een document-ID kan iedereen met de link meelezen;
+   - variabele `APB_DOCS_SYNC` = `aan`.
+4. **Uitzetten**: de variabele op iets anders zetten of weghalen. De stap heeft `continue-on-error`, dus een fout bij Google houdt het publiceren nooit tegen.
+
+Boven- en onderaan elk Doc staat dezelfde controlecode, afgeleid van de tekst. Verandert de tekst niet, dan blijft het Doc ongemoeid (scheelt revisies). Zo zie je in Gemini of je de nieuwste versie voor je hebt.
+
 ## Samenvattingen
 
 ```bash
