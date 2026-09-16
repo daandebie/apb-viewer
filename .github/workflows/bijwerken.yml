@@ -82,18 +82,6 @@ jobs:
           python export.py --uitvoer _site/gemini --basis-url "$BASIS"
           python export.py --data _site/demo/data/apb.json --geen-status --uitvoer _site/demo/gemini --basis-url "${BASIS}demo/"
 
-      - name: Google Docs bijwerken
-        # Staat uit: zet de repo-variabele APB_DOCS_SYNC op "aan" zodra de Drive-sync in Gemini bewezen is.
-        # Mag de publicatie nooit tegenhouden.
-        if: ${{ vars.APB_DOCS_SYNC == 'aan' }}
-        continue-on-error: true
-        env:
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          APB_DOCS: ${{ secrets.APB_DOCS }}
-        run: |
-          python -m pip install --quiet google-auth requests
-          python docs_sync.py
-
       - name: Site samenstellen
         run: |
           mkdir -p _site/data

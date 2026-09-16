@@ -10,4 +10,3 @@ __pycache__/
 .DS_Store
 trigger.log
 trigger-fout.log
-docs-map.json
