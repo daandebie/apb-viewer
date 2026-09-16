@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
 """
-Laag 5 — de dagteksten in Google Docs zetten, zodat Gemini ze via Drive kan lezen.
+Laag 5 — de dagteksten in één Google Doc zetten, zodat Gemini ze via Drive kan lezen.
 
 Gemini opent geen webadressen, maar leest wel Google Docs uit Drive ("auto-synced after import").
-Dit script schrijft dezelfde tekst als de exportknop naar bestaande Docs: per dag één of meer,
-want een Doc houdt op rond 1,02 miljoen tekens.
+Dit script schrijft dezelfde tekst als de exportknop naar één bestaand Doc: per dag een tabblad.
+Past een dag niet in één tabblad (een tabblad houdt op rond 1,02 miljoen tekens), dan maakt het
+script zelf "(deel 2)" erbij aan. Er hoeft dus maar één document te bestaan.
 
-De Docs moeten al bestaan en gedeeld zijn met het serviceaccount (bewerker). Een serviceaccount
-heeft geen eigen opslagruimte en kan dus zelf geen Doc aanmaken.
+Het Doc moet al bestaan en gedeeld zijn met het serviceaccount (bewerker): een serviceaccount
+heeft geen eigen opslagruimte en kan zelf geen document aanmaken.
 
-  docs_sync.py --droog                     wat zou er gebeuren (omvang, delen, controlecode)
-  docs_sync.py --uit /tmp/docs             de teksten naar bestanden schrijven i.p.v. naar Docs
-  docs_sync.py                             de Docs bijwerken
+  docs_sync.py --droog                     wat zou er gebeuren (omvang, tabbladen, controlecode)
+  docs_sync.py --uit /tmp/docs             de teksten naar bestanden schrijven i.p.v. naar het Doc
+  docs_sync.py                             het Doc bijwerken
 
-Welke Docs: JSON in de omgevingsvariabele APB_DOCS of in --map (buiten git houden — met de
-document-ID's kan iedereen met de link mee lezen):
+Welk Doc: JSON in de omgevingsvariabele APB_DOCS of in --map (buiten git houden — met het
+document-ID kan iedereen met de link meelezen):
 
-  {"2026-09-16": ["<doc-id deel 1>", "<doc-id deel 2>"], "2026-09-17": ["<doc-id>"]}
+  {"document": "<doc-id>", "tabs": {"2026-09-16": "Dag 1", "2026-09-17": "Dag 2"}}
 
-Bovenaan en onderaan elk Doc staat dezelfde controlecode. Die verandert alleen als de tekst
-verandert, zodat je in Gemini kunt zien of je de nieuwste versie voor je hebt.
+Boven- en onderaan elk tabblad staat dezelfde controlecode, afgeleid van de tekst. Verandert de
+tekst niet, dan blijft het tabblad ongemoeid. Zo zie je in Gemini of je de nieuwste versie hebt.
+
+Gebruik geen subtabbladen in dit document: het script kijkt alleen naar tabbladen op het eerste niveau.
 """
 from __future__ import annotations
 
@@ -38,8 +41,9 @@ HERE = Path(__file__).resolve().parent
 TZ = ZoneInfo("Europe/Amsterdam")
 API = "https://docs.googleapis.com/v1/documents"
 SCOPES = ["https://www.googleapis.com/auth/documents"]
-# Google Docs stopt rond 1,02 miljoen tekens; marge voor de kop, de staart en groei tijdens het schrijven.
+# Een tabblad houdt op rond 1,02 miljoen tekens; marge voor de kop en de staart.
 MAX_TEKENS = 900_000
+VELDEN = "tabs(tabProperties(tabId,title,index),documentTab(body(content(endIndex,paragraph(elements(textRun(content)))))))"
 
 
 def fragment_tekst(f: dict) -> str:
@@ -56,7 +60,7 @@ def kop(dag: dict, deel: int, delen: int, fragmenten: list[dict], code: str, nu:
         disc[0],
         " ".join(disc[1:]),
         "",
-        f"Dit deel bevat de fragmenten {eerste} t/m {laatste} ({export.getal(len(fragmenten))} stuks). "
+        f"Dit tabblad bevat de fragmenten {eerste} t/m {laatste} ({export.getal(len(fragmenten))} stuks). "
         f"Het verslag loopt tot {export.tijd(dag.get('laatste_markeertijd')) or '—'} uur; wat daarna is gezegd staat er nog niet in. "
         f"Nieuwste verslagversie binnengehaald: {apb['meta'].get('laatst_opgehaald_op') or 'nog niets'}.",
         "",
@@ -75,10 +79,10 @@ def kop(dag: dict, deel: int, delen: int, fragmenten: list[dict], code: str, nu:
     ])
 
 
-def bouw_delen(apb: dict, datum: str, aantal_docs: int, nu: datetime) -> list[tuple[str, str, int]]:
-    """(tekst, controlecode, aantal fragmenten) per Doc."""
-    dag = next(d for d in apb["dagen"] if d["datum"] == datum)
-    fragmenten = [f for f in apb["fragmenten"] if f["dag"] == datum]
+def bouw_delen(apb: dict, datum: str, nu: datetime) -> list[tuple[str, str, int]]:
+    """(tekst, controlecode, aantal fragmenten) per tabblad."""
+    dag = next((d for d in apb["dagen"] if d["datum"] == datum), None)
+    fragmenten = [f for f in apb["fragmenten"] if f["dag"] == datum] if dag else []
     if not fragmenten:
         return []
 
@@ -94,53 +98,83 @@ def bouw_delen(apb: dict, datum: str, aantal_docs: int, nu: datetime) -> list[tu
         groepen[-1].append(f)
         lengte += t
 
-    afgekapt = []
-    if len(groepen) > aantal_docs:
-        # Te weinig Docs: de laatste bevat wat er nog in past, de rest staat alleen in de viewer.
-        afgekapt = [f for g in groepen[aantal_docs:] for f in g]
-        groepen = groepen[:aantal_docs]
-
     uit = []
     for i, groep in enumerate(groepen, 1):
         romp = "".join(fragment_tekst(f) for f in groep)
-        # De code hangt aan de inhoud, niet aan de tijd: zo blijft een Doc ongemoeid als er niets veranderde.
+        # De code hangt aan de inhoud, niet aan de tijd: zo blijft een tabblad ongemoeid als er niets veranderde.
         code = hashlib.sha256(romp.encode()).hexdigest()[:6].upper()
-        staart = f"\nEINDE {'DEEL ' + str(i) if len(groepen) > 1 else 'DOCUMENT'} — controlecode {code}\n"
-        if afgekapt and i == len(groepen):
-            staart = (f"\nLET OP: {export.getal(len(afgekapt))} latere fragmenten ({afgekapt[0]['id']} en verder) passen niet meer "
-                      f"in dit document. Die staan wel in de viewer op https://daandebie.github.io/apb-viewer/\n") + staart
+        staart = f"\nEINDE {'DEEL ' + str(i) if len(groepen) > 1 else 'TABBLAD'} — controlecode {code}\n"
         uit.append((kop(dag, i, len(groepen), groep, code, nu, apb) + romp + staart, code, len(groep)))
     return uit
 
 
-def huidige_code(sessie, doc_id: str) -> str | None:
-    r = sessie.get(f"{API}/{doc_id}", params={"fields": "body.content"}, timeout=60)
-    r.raise_for_status()
-    for element in r.json().get("body", {}).get("content", []):
-        for stuk in element.get("paragraph", {}).get("elements", []):
-            tekst = stuk.get("textRun", {}).get("content", "")
-            if "controlecode" in tekst:
-                return tekst.split("controlecode", 1)[1].strip()
-    return None
+def titels(basis: str, aantal: int) -> list[str]:
+    return [basis] + [f"{basis} (deel {i})" for i in range(2, aantal + 1)]
 
 
-def eind_index(sessie, doc_id: str) -> int:
-    r = sessie.get(f"{API}/{doc_id}", params={"fields": "body.content(endIndex)"}, timeout=60)
-    r.raise_for_status()
-    inhoud = r.json().get("body", {}).get("content", [])
-    return max((e.get("endIndex", 1) for e in inhoud), default=1)
+def sleutel(titel: str) -> str:
+    return " ".join(titel.split()).casefold()
 
 
-def schrijf_doc(sessie, doc_id: str, tekst: str) -> None:
-    eind = eind_index(sessie, doc_id)
-    verzoeken = []
-    # De afsluitende alinea-einde van een Doc mag niet weg; vandaar eind - 1.
-    if eind > 2:
-        verzoeken.append({"deleteContentRange": {"range": {"startIndex": 1, "endIndex": eind - 1}}})
-    verzoeken.append({"insertText": {"location": {"index": 1}, "text": tekst}})
-    r = sessie.post(f"{API}/{doc_id}:batchUpdate", json={"requests": verzoeken}, timeout=300)
-    if not r.ok:
-        raise SystemExit(f"Doc {doc_id} bijwerken mislukt ({r.status_code}): {r.text[:500]}")
+class Doc:
+    """Tabbladen van één document lezen en schrijven."""
+
+    def __init__(self, sessie, doc_id: str):
+        self.sessie, self.doc_id = sessie, doc_id
+        self.gewenst: list[str] = []  # titels die deze run gebruikt worden; die pakken we niet als "leeg tabblad"
+        self.ververs()
+
+    def ververs(self) -> None:
+        r = self.sessie.get(f"{API}/{self.doc_id}", params={"includeTabsContent": "true", "fields": VELDEN}, timeout=120)
+        r.raise_for_status()
+        self.tabs = []
+        for tab in r.json().get("tabs", []):
+            props = tab.get("tabProperties", {})
+            inhoud = tab.get("documentTab", {}).get("body", {}).get("content", [])
+            tekst = "".join(stuk.get("textRun", {}).get("content", "")
+                            for e in inhoud for stuk in e.get("paragraph", {}).get("elements", []))
+            self.tabs.append({
+                "id": props.get("tabId"),
+                "titel": props.get("title") or "",
+                "eind": max((e.get("endIndex", 1) for e in inhoud), default=1),
+                "code": tekst.split("controlecode", 1)[1].split()[0] if "controlecode" in tekst else None,
+                "leeg": len(tekst.strip()) == 0,
+            })
+
+    def zoek(self, titel: str) -> dict | None:
+        return next((t for t in self.tabs if sleutel(t["titel"]) == sleutel(titel)), None)
+
+    def batch(self, verzoeken: list[dict]) -> list[dict]:
+        r = self.sessie.post(f"{API}/{self.doc_id}:batchUpdate", json={"requests": verzoeken}, timeout=300)
+        if not r.ok:
+            raise SystemExit(f"Document {self.doc_id} bijwerken mislukt ({r.status_code}): {r.text[:500]}")
+        return r.json().get("replies", [])
+
+    def zorg_voor_tab(self, titel: str) -> dict:
+        tab = self.zoek(titel)
+        if tab:
+            return tab
+        # Een vers document heeft één leeg tabblad ("Tab 1"): dat hernoemen we in plaats van er een naast te zetten.
+        leeg = next((t for t in self.tabs if t["leeg"] and not any(sleutel(t["titel"]) == sleutel(x) for x in self.gewenst)), None)
+        if leeg:
+            self.batch([{"updateDocumentTabProperties": {"tabProperties": {"tabId": leeg["id"], "title": titel}, "fields": "title"}}])
+            leeg["titel"] = titel
+            return leeg
+        self.batch([{"addDocumentTab": {"tabProperties": {"title": titel}}}])
+        self.ververs()
+        tab = self.zoek(titel)
+        if not tab:
+            raise SystemExit(f"Tabblad '{titel}' kon niet worden aangemaakt.")
+        return tab
+
+    def schrijf(self, tab: dict, tekst: str) -> None:
+        verzoeken = []
+        # Het laatste alinea-einde van een tabblad mag niet weg; vandaar eind - 1.
+        if tab["eind"] > 2:
+            verzoeken.append({"deleteContentRange": {"range": {"tabId": tab["id"], "startIndex": 1, "endIndex": tab["eind"] - 1}}})
+        verzoeken.append({"insertText": {"location": {"tabId": tab["id"], "index": 1}, "text": tekst}})
+        self.batch(verzoeken)
+        tab["eind"] = len(tekst) + 1
 
 
 def maak_sessie():
@@ -149,62 +183,74 @@ def maak_sessie():
         from google.auth.transport.requests import AuthorizedSession
     except ImportError:
         sys.exit("google-auth en requests ontbreken: python3 -m pip install google-auth requests")
-    sleutel = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
-    if not sleutel:
+    sleutelbestand = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+    if not sleutelbestand:
         sys.exit("GOOGLE_SERVICE_ACCOUNT_JSON ontbreekt (JSON van het serviceaccount).")
-    info = json.loads(Path(sleutel).read_text() if Path(sleutel).exists() else sleutel)
+    info = json.loads(Path(sleutelbestand).read_text() if Path(sleutelbestand).exists() else sleutelbestand)
     return AuthorizedSession(service_account.Credentials.from_service_account_info(info, scopes=SCOPES))
 
 
-def laad_map(pad: str | None) -> dict[str, list[str]]:
+def laad_map(pad: str | None) -> tuple[str, dict[str, str]]:
     rauw = Path(pad).read_text() if pad else os.environ.get("APB_DOCS", "")
     if not rauw.strip():
-        sys.exit("Geen document-ID's: zet APB_DOCS of gebruik --map. Zie de kop van dit bestand.")
+        sys.exit("Geen document-ID: zet APB_DOCS of gebruik --map. Zie de kop van dit bestand.")
     kaart = json.loads(rauw)
-    return {dag: ([ids] if isinstance(ids, str) else list(ids)) for dag, ids in kaart.items()}
+    if "document" not in kaart or "tabs" not in kaart:
+        sys.exit('APB_DOCS moet zijn: {"document": "<doc-id>", "tabs": {"2026-09-16": "Dag 1", …}}')
+    return kaart["document"], kaart["tabs"]
 
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", default=str(HERE / "data" / "apb.json"))
-    ap.add_argument("--map", help="JSON-bestand met {datum: [doc-id, …]}; standaard uit APB_DOCS")
+    ap.add_argument("--map", help="JSON met document-ID en tabbladtitels; standaard uit APB_DOCS")
     ap.add_argument("--dag", action="append", help="alleen deze dag(en) bijwerken")
     ap.add_argument("--droog", action="store_true", help="alleen tonen wat er zou gebeuren")
-    ap.add_argument("--uit", help="de teksten naar deze map schrijven in plaats van naar Docs")
+    ap.add_argument("--uit", help="de teksten naar deze map schrijven in plaats van naar het Doc")
     ap.add_argument("--altijd", action="store_true", help="ook schrijven als de controlecode gelijk is")
     args = ap.parse_args(argv)
 
     apb = export.laad_json(Path(args.data), None)
     if apb is None:
         sys.exit(f"{args.data} ontbreekt — draai eerst parse.py.")
-    kaart = laad_map(args.map)
+    doc_id, tabkaart = laad_map(args.map)
     nu = datetime.now(TZ)
-    sessie = None if args.droog or args.uit else maak_sessie()
 
-    for datum, doc_ids in sorted(kaart.items()):
+    werk = []  # (datum, titel, tekst, code, aantal)
+    for datum, basis in sorted(tabkaart.items()):
         if args.dag and datum not in args.dag:
             continue
-        delen = bouw_delen(apb, datum, len(doc_ids), nu)
+        delen = bouw_delen(apb, datum, nu)
         if not delen:
-            print(f"{datum}: nog geen verslag, Docs ongemoeid gelaten")
+            print(f"{datum}: nog geen verslag, tabblad ongemoeid gelaten")
             continue
-        for i, ((tekst, code, aantal), doc_id) in enumerate(zip(delen, doc_ids), 1):
-            wat = f"{datum} deel {i}/{len(delen)}: {export.getal(aantal)} fragmenten, {export.getal(len(tekst))} tekens, code {code}"
+        for titel, (tekst, code, aantal) in zip(titels(basis, len(delen)), delen):
+            werk.append((datum, titel, tekst, code, aantal))
+
+    if not werk:
+        return 0
+    if args.uit or args.droog:
+        for datum, titel, tekst, code, aantal in werk:
+            wat = f"{datum} → tabblad '{titel}': {export.getal(aantal)} fragmenten, {export.getal(len(tekst))} tekens, code {code}"
             if args.uit:
-                pad = Path(args.uit) / f"{datum}-deel{i}.txt"
+                pad = Path(args.uit) / f"{titel.replace('/', '-')}.txt"
                 pad.parent.mkdir(parents=True, exist_ok=True)
                 pad.write_text(tekst)
                 print(f"{wat} → {pad}")
-            elif args.droog:
-                print(f"{wat} → Doc {doc_id}")
             else:
-                if not args.altijd and huidige_code(sessie, doc_id) == code:
-                    print(f"{wat} → ongewijzigd, overgeslagen")
-                    continue
-                schrijf_doc(sessie, doc_id, tekst)
-                print(f"{wat} → bijgewerkt")
-        if len(delen) < len(doc_ids):
-            print(f"{datum}: {len(doc_ids) - len(delen)} Doc(s) niet nodig, ongemoeid gelaten")
+                print(f"{wat} (document {doc_id})")
+        return 0
+
+    doc = Doc(maak_sessie(), doc_id)
+    doc.gewenst = [titel for _, titel, _, _, _ in werk]
+    for datum, titel, tekst, code, aantal in werk:
+        wat = f"{datum} → tabblad '{titel}': {export.getal(aantal)} fragmenten, {export.getal(len(tekst))} tekens, code {code}"
+        tab = doc.zorg_voor_tab(titel)
+        if not args.altijd and tab["code"] == code:
+            print(f"{wat} — ongewijzigd, overgeslagen")
+            continue
+        doc.schrijf(tab, tekst)
+        print(f"{wat} — bijgewerkt")
     return 0
 
 
