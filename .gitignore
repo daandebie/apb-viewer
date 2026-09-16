@@ -8,3 +8,5 @@ fetcher.log
 *.part
 __pycache__/
 .DS_Store
+trigger.log
+trigger-fout.log
