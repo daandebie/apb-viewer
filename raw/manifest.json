@@ -936,6 +936,42 @@
    "bytes": 1042758,
    "sha256": "8f7d256288ac1b10993cf191729b0ebbe597bd409620c511d7cdb42139c51da7",
    "xml_ok": true
+  },
+  {
+   "bestand": "2026-09-16_146405b6-4a7a-461b-abd8-42aada909f7e_2026-09-16T20-24-05.9664907Z.xml",
+   "opgehaald_op": "2026-09-17T00:51:08+02:00",
+   "datum": "2026-09-16",
+   "vergadering": {
+    "Id": "ffd9db1d-3161-4385-8e67-3394838e4ca5",
+    "Soort": "Plenair",
+    "Titel": "2e vergadering, woensdag 16 september 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 2,
+    "Datum": "2026-09-16T00:00:00+02:00",
+    "Aanvangstijd": "2026-09-16T10:15:00+02:00",
+    "Sluiting": "0001-01-01T00:00:00Z",
+    "GewijzigdOp": "2026-09-16T22:23:40.8880618+02:00",
+    "ApiGewijzigdOp": "2026-09-16T20:24:05.9794185Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "146405b6-4a7a-461b-abd8-42aada909f7e",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 1397205,
+    "GewijzigdOp": "2026-09-16T22:23:40.8880618+02:00",
+    "ApiGewijzigdOp": "2026-09-16T20:24:05.9664907Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "ffd9db1d-3161-4385-8e67-3394838e4ca5"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "1397205"
+   },
+   "bytes": 1397205,
+   "sha256": "56746df5ff20777dc8ca2cfe97adb70dfa40926b7072f7636477d10940b853e9",
+   "xml_ok": true
   }
  ]
 }
