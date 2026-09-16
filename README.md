@@ -27,6 +27,15 @@ GitHub Actions (`.github/workflows/bijwerken.yml`) doet het werk, je laptop hoef
 | daarna dagelijks 08:23 | idem, voor late tussenversies en de gecorrigeerde Eindpublicatie |
 | bij elke push naar `main` | opnieuw bouwen en publiceren (bijv. na nieuwe samenvattingen) |
 
+**Het schema van 5 minuten vuurt niet betrouwbaar af.** Op 16-09-2026 zaten er gaten van uren tussen de runs; GitHub knijpt korte schema's in publieke repo's af. Daarom jaagt een launchd-job op de Mac de runs aan: `apb-trigger.sh` start elke 5 minuten een run via `gh workflow run`, maar alleen op 16–18 sep tussen 08:00 en 23:59, en niet als er al een run loopt. Log: `trigger.log`.
+
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/nl.daandebie.apb-trigger.plist   # aan
+launchctl bootout   gui/$(id -u)/nl.daandebie.apb-trigger                                # uit
+```
+
+Daarvoor moet de Mac wakker zijn; slaapt hij, dan valt het terug op wat GitHub zelf afvuurt en kleurt de statusknop na 25 minuten oranje. Het ophalen blijft in de cloud, dus `raw/` houdt één schrijver.
+
 Een storing bij de Kamer blokkeert de publicatie niet: de viewer toont dan "Laatste controle mislukt". Geplande GitHub-runs starten bij zo'n kort interval regelmatig 10–15 minuten later dan gepland; pas als er 25 minuten geen controle is geweest kleurt de statusknop oranje ("Bijwerken loopt achter"). Handmatig een run starten: `gh workflow run bijwerken.yml -R daandebie/apb-viewer`.
 
 **Let op, rond half november:** GitHub zet geplande workflows in een publieke repo uit na 60 dagen zonder activiteit. Komt er na 18 september niets nieuws binnen, dan stopt de dagelijkse run rond 17 november, en dat is net de periode waarin de gecorrigeerde Eindpublicatie verwacht wordt. Controleer dan *Actions*; zet de workflow zo nodig weer aan en start een run met het commando hierboven.
@@ -181,6 +190,7 @@ git add data/samenvattingen.json && git commit -m "Samenvattingen" && git pull -
 | `data/ophaalstatus.json` | stand van de laatste controle (afgeleid, niet in git) |
 | `.github/workflows/bijwerken.yml` | ophalen, verwerken en publiceren |
 | `export.py` | leesbare bestanden voor taalmodellen op vaste adressen (`/gemini/`) |
+| `apb-trigger.sh` | jaagt vanaf de Mac elke 5 min een run aan (launchd), omdat GitHub het schema afknijpt |
 | `gemini-prompt-apb.md` | prompt voor Gemini (in een Gem): uploadroute, hoe uploads en aanvullingen te combineren, hoe te antwoorden; online als `gemini-prompt.txt`/`.md` |
 | `fetcher.log` | ophaallog (niet in git) |
 
