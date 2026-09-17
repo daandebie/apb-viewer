@@ -1224,6 +1224,42 @@
    "bytes": 408483,
    "sha256": "0f21b6b5562d9f42d589efc4a998650d4db95b37eaacfc8d861bb5e50c122cc5",
    "xml_ok": true
+  },
+  {
+   "bestand": "2026-09-17_fda8956b-a805-4c52-ace3-9da41d2b9915_2026-09-17T17-22-16.7888908Z.xml",
+   "opgehaald_op": "2026-09-17T19:34:58+02:00",
+   "datum": "2026-09-17",
+   "vergadering": {
+    "Id": "2190ef99-7f17-4661-981a-94beb6c4350b",
+    "Soort": "Plenair",
+    "Titel": "3e vergadering, donderdag 17 september 2026",
+    "Zaal": "Plenaire zaal",
+    "VergaderingNummer": 3,
+    "Datum": "2026-09-17T00:00:00+02:00",
+    "Aanvangstijd": "2026-09-17T10:15:00+02:00",
+    "Sluiting": "2026-09-17T00:00:00+02:00",
+    "GewijzigdOp": "2026-09-17T19:21:06.5692628+02:00",
+    "ApiGewijzigdOp": "2026-09-17T17:22:18.9013281Z",
+    "Verwijderd": false
+   },
+   "verslag": {
+    "Id": "fda8956b-a805-4c52-ace3-9da41d2b9915",
+    "Soort": "Tussenpublicatie",
+    "Status": "Ongecorrigeerd",
+    "ContentType": "text/xml",
+    "ContentLength": 759348,
+    "GewijzigdOp": "2026-09-17T19:21:06.5692628+02:00",
+    "ApiGewijzigdOp": "2026-09-17T17:22:16.7888908Z",
+    "Verwijderd": false,
+    "Vergadering_Id": "2190ef99-7f17-4661-981a-94beb6c4350b"
+   },
+   "http": {
+    "content_type": "text/xml",
+    "content_length": "759348"
+   },
+   "bytes": 759348,
+   "sha256": "fa56cc73692bb3f7892eb0f8ba5ba7f33cf1773c554c357ccea6a4cff3ad6da9",
+   "xml_ok": true
   }
  ]
 }
